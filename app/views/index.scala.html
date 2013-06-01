@@ -2,27 +2,30 @@
 
 @import helper._
 
-@main(title = "Login application") {
-    
-    <h1>Login:</h1>
-    
-    @form(action = routes.Application.log, args = 'id -> "loginform") {
-        
-        @inputText(
-            field = loginForm("name"),
-            args = '_label -> "UserId", 'placeholder -> "user"
-        )
-        
-        @inputText(
-            field = loginForm("password"),
-            args = '_label -> "password?", 'placeholder -> "password"
+@main(title = "Login : UMFlix") {
+
+<img src="@routes.Assets.at("images/umflix1.jpg")">
+
+
+<h1>Login: </h1>
+
+@form(action = routes.Application.login, args = 'id -> "loginform") {
+
+@inputText(
+field = loginForm("name"),
+args = '_label -> "UserId", 'placeholder -> "user"
 )
 
+@inputPassword(
+field = loginForm("password"),
+args = '_label -> "password?", 'placeholder -> "password"
+)
 
-        <p class="buttons">
-            <input type="submit">
-        <p>
-        
-    }
-    
+<p class="buttons">
+    <input type="submit">
+<p>
+
+
 }
+
+    }

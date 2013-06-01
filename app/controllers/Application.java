@@ -1,49 +1,39 @@
 package controllers;
 
 import play.*;
-import play.mvc.*;
 import play.data.*;
-import static play.data.Form.*;
 import play.data.validation.Constraints.*;
-
-import java.util.*;
-
+import play.mvc.*;
 import views.html.*;
 
+import static play.data.Form.*;
+
 public class Application extends Controller {
-    
+    static  String token=""; //poner constante con invalid
+
     /**
-     * Describes the hello form.
+     * Describes the login form.
      */
     public static class Login {
-        @Required public String name;
-        @Required public String password;
-    } 
-    
-    // -- Actions
-  
-    /**
-     * Home page
-     */
+        public String name;
+        public String password;
+    }
+
     public static Result index() {
-        return ok(
-            index.render(form(Login.class))
-        );
+        return ok(index.render(form(Login.class)));
     }
-  
-    /**
-     * Handles the form submission.
-     */
-    public static Result log() {
+
+    public static Result login(){
+        String message;
         Form<Login> form = form(Login.class).bindFromRequest();
-        if(form.hasErrors()) {
-            return badRequest(index.render(form));
-        } else {
-            Login data = form.get();
-            return ok(
-                login.render(data.name, data.password)
-            );
+        Login data = form.get();
+
+       if(data.name.equals("pepe") && data.password.equals("grillo")){
+        message="welcome";
+        }else{
+          message="wrong";
         }
+
+        return ok(homePage.render(message));
     }
-  
 }
