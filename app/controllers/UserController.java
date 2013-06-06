@@ -5,7 +5,6 @@ import exception.CancelActionException;
 import mockclasses.AuthenticationHandler;
 import mockclasses.Movie;
 import mockclasses.MovieManager;
-import mockclasses.UserManager;
 
 import java.util.List;
 import java.util.ResourceBundle;
@@ -31,14 +30,25 @@ public class UserController {
     // User's session token
     private String token;
 
+    //UserManager's bean
+    @EJB(beanName = "UserManager")
+    UserManager userManager;
+
     /*
      * @param userEmail The email address by which the user is registered.
      * @param password The password of the user.
      * @throws CancelActionException if login wasn't accepted.
      */
     public void login(String userEmail, String password) throws CancelActionException{
-        UserManager userManager = (UserManager)(DaoFactory.getDao(rb.getString(USER_MANAGER_IMPL_K)));
+        //UserManager userManager = (UserManager)(DaoFactory.getDao(rb.getString(USER_MANAGER_IMPL_K))); userManager no es un DAO ???
         // Creates an User with Role User, invokes UserManager to do the login.
+        Role roleUser = new Role(Role.roleType.USER);
+        User user = new UserController(userEmail, userEmail, password, roleUser);//supuse mail y name iguales
+        try{
+            String token = userManager.login(user); //el token no lo deberia manejar el usermanager?????
+        }catch(InvalidUserException iue){
+            throw new CancelActionException("user or password invalid");
+        }
     }
 
     /*

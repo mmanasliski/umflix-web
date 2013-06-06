@@ -1,5 +1,6 @@
 package controllers;
 
+import exception.CancelActionException;
 import play.*;
 import play.data.*;
 import play.data.validation.Constraints.*;
@@ -9,7 +10,8 @@ import views.html.*;
 import static play.data.Form.*;
 
 public class Application extends Controller {
-    static  String token=""; //poner constante con invalid
+  @EJB(beanName = "UserController")
+    UserController userController;      //cambiar por metodo getBean???
 
     /**
      * Describes the login form.
@@ -27,13 +29,12 @@ public class Application extends Controller {
         String message;
         Form<Login> form = form(Login.class).bindFromRequest();
         Login data = form.get();
-
-       if(data.name.equals("pepe") && data.password.equals("grillo")){
-        message="welcome";
-        }else{
-          message="wrong";
+        try{
+            userController.login(data.name,data.password);
+            message = "WELCOME";
+        }catch(CancelActionException e){
+            message="ERROR";
         }
-
         return ok(homePage.render(message));
     }
 }
