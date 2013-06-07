@@ -42,7 +42,7 @@ public class UserController {
     public void login(String userEmail, String password) throws CancelActionException{
         //UserManager userManager = (UserManager)(DaoFactory.getDao(rb.getString(USER_MANAGER_IMPL_K))); userManager no es un DAO ???
         // Creates an User with Role User, invokes UserManager to do the login.
-        Role roleUser = new Role(Role.roleType.USER);
+        Role roleUser = new Role(Role.roleType.USER);//ver bien!!!
         User user = new UserController(userEmail, userEmail, password, roleUser);//supuse mail y name iguales
         try{
             String token = userManager.login(user); //el token no lo deberia manejar el usermanager?????

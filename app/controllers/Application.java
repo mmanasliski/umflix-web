@@ -30,11 +30,16 @@ public class Application extends Controller {
         Form<Login> form = form(Login.class).bindFromRequest();
         Login data = form.get();
         try{
-            userController.login(data.name,data.password);
             message = "WELCOME";
+            userController.login(data.name,data.password);
+            return ok(homePage.render(message));
         }catch(CancelActionException e){
-            message="ERROR";
+            return unauthorized(e.getMessage());
         }
-        return ok(homePage.render(message));
+    }
+
+    public static Result register(){
+        //something
+        return ok(homePage.render("Register"));
     }
 }
