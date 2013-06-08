@@ -1,0 +1,40 @@
+@(registerForm: Form[Application.Register])
+
+@import helper._
+
+@main(title = "Register : UMFlix") {
+
+<img src="@routes.Assets.at("images/umflix1.jpg")">
+
+    <h1>Register: </h1>
+
+        @form(action = routes.Application.registering, args = 'id -> "registerform") {
+
+        @inputText(
+        field = registerForm("email"),
+        args = '_label -> "E-mail", 'placeholder -> "email"
+        )
+
+        @inputText(
+        field = registerForm("name"),
+        args = '_label -> "Name", 'placeholder -> "name"
+        )
+
+        @inputPassword(
+        field = registerForm("password"),
+        args = '_label -> "password?", 'placeholder -> "password"
+        )
+
+        @inputPassword(
+        field = registerForm("secondPassword"),
+        args = '_label -> "re-enter password", 'placeholder -> "secondPassword"
+        )
+
+<p class="buttons">
+    <input type="submit">
+<p>
+
+
+    }
+
+    }

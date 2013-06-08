@@ -1,32 +1,40 @@
+
 @(loginForm: Form[Application.Login])
 
 @import helper._
 
 @main(title = "Login : UMFlix") {
 
-    <img src="@routes.Assets.at("images/umflix1.jpg")">
-    <h1>Login: </h1>
+<img src="@routes.Assets.at("images/umflix1.jpg")">
+<h1>Login: </h1>
 
-    @form(action = routes.Application.login, args = 'id -> "loginform") {
+<<<<<<< HEAD
+@form(action = routes.Application.login, args = 'id -> "loginform") {
+=======
+<p class="buttons">
+    <a href="@routes.Application.registerForm">Register now and start watching!</a>
+</p>
 
-        @inputText(
-            field = loginForm("name"),
-            args = '_label -> "UserId", 'placeholder -> "user"
-        )
+>>>>>>> Register and ChangePassword implemented
 
-        @inputPassword(
-            field = loginForm("password"),
-            args = '_label -> "password?", 'placeholder -> "password"
-        )
+@inputText(
+field = loginForm("name"),
+args = '_label -> "UserId", 'placeholder -> "user"
+)
 
-        <p class="buttons">
-            <input type="submit">
-        <p>
+@inputPassword(
+field = loginForm("password"),
+args = '_label -> "password?", 'placeholder -> "password"
+)
+
+<p class="buttons">
+    <input type="submit">
+<p>
 
     }
-     <h1>Register: </h1>
-     <form action="@routes.Aplication.register()" method="post">
-        <input type="submit">
-     </form>
+<h1>Register: </h1>
+<form action="@routes.Aplication.register()" method="post">
+    <input type="submit">
+</form>
 
 }
