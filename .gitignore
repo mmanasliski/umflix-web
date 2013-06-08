@@ -1,6 +1,8 @@
 # IntelliJ #
 *.idea
 *.iml
+target/
+project/
 
 # Compiled source #
 ###################
