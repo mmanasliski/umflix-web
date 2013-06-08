@@ -1,11 +1,8 @@
 package controllers;
 
 import exception.CancelActionException;
-import play.*;
 import play.data.*;
-import play.data.validation.Constraints.*;
 import play.mvc.*;
-import views.html.*;
 
 import static play.data.Form.*;
 
@@ -16,6 +13,7 @@ public class Application extends Controller {
     private static final String SUCCEDED =" created. Please head back to login page and sign in !";
     private static final String SUCCEDED_TO_CHANGE_PASSWORD ="You have updated your password succesfully";
     static  String token=""; //poner constante con invalid
+    static UserController userController= new UserController();  //cambiar por metodo getBean???
 
     /**
      * Describes the login form.
@@ -52,7 +50,7 @@ public class Application extends Controller {
     }
 
     public static Result login(){
-        UserController userController= new UserController();  //cambiar por metodo getBean???
+
         String message;
         Form<Login> form = form(Login.class).bindFromRequest();
         Login data = form.get();
@@ -63,12 +61,6 @@ public class Application extends Controller {
         }catch(CancelActionException e){
             return unauthorized(e.getMessage());
         }
-    }
-
-
-    public static Result register(){
-        //something
-        return ok(homePage.render("Register"));
     }
 
     public static Result registering(){
@@ -83,6 +75,7 @@ public class Application extends Controller {
                 message="Account "+information.email+" created. Please go back and login to start watching!";
                 return ok(register.render(message));
             } catch (CancelActionException e) {
+                e.printStackTrace();
                 return ok(registerIndex.render(form(Register.class)));
             }
         }else{
