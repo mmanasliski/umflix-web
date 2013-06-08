@@ -2,7 +2,7 @@
 *.idea
 *.iml
 target/
-project/
+project/target
 
 # Compiled source #
 ###################
