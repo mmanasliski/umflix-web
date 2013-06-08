@@ -8,14 +8,13 @@
 <img src="@routes.Assets.at("images/umflix1.jpg")">
 <h1>Login: </h1>
 
-<<<<<<< HEAD
+
 @form(action = routes.Application.login, args = 'id -> "loginform") {
-=======
+
 <p class="buttons">
     <a href="@routes.Application.registerForm">Register now and start watching!</a>
 </p>
 
->>>>>>> Register and ChangePassword implemented
 
 @inputText(
 field = loginForm("name"),
@@ -32,9 +31,4 @@ args = '_label -> "password?", 'placeholder -> "password"
 <p>
 
     }
-<h1>Register: </h1>
-<form action="@routes.Aplication.register()" method="post">
-    <input type="submit">
-</form>
-
 }

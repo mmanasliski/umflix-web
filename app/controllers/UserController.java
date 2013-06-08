@@ -1,7 +1,6 @@
 package controllers;
 
 import dao.DaoFactory;
-import edu.umflix.authenticationhandler.exceptions.InvalidUserException;
 import edu.umflix.model.Role;
 import edu.umflix.model.User;
 import edu.umflix.usermanager.UserManager;
