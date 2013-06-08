@@ -10,8 +10,7 @@ import views.html.*;
 import static play.data.Form.*;
 
 public class Application extends Controller {
-    @EJB(beanName = "UserController")
-    UserController userController;      //cambiar por metodo getBean???
+
     private static final String EMAIL_ERROR ="Email already used, please try another";
     private static final String PASSWORD_MISSMATCH ="The passwords you inserted did not match";
     private static final String SUCCEDED =" created. Please head back to login page and sign in !";
@@ -53,17 +52,19 @@ public class Application extends Controller {
     }
 
     public static Result login(){
+        UserController userController= new UserController();  //cambiar por metodo getBean???
         String message;
         Form<Login> form = form(Login.class).bindFromRequest();
         Login data = form.get();
         try{
             message = "WELCOME";
-            userController.login(data.name,data.password);
+            userController.login(data.name, data.password);
             return ok(homePage.render(message));
         }catch(CancelActionException e){
             return unauthorized(e.getMessage());
         }
     }
+
 
     public static Result register(){
         //something

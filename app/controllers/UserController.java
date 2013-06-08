@@ -1,6 +1,10 @@
 package controllers;
 
 import dao.DaoFactory;
+import edu.umflix.authenticationhandler.exceptions.InvalidUserException;
+import edu.umflix.model.Role;
+import edu.umflix.model.User;
+import edu.umflix.usermanager.UserManager;
 import exception.CancelActionException;
 import mockclasses.AuthenticationHandler;
 import mockclasses.Movie;
@@ -30,9 +34,7 @@ public class UserController {
     // User's session token
     private String token;
 
-    //UserManager's bean
-    @EJB(beanName = "UserManager")
-    UserManager userManager;
+
 
     /*
      * @param userEmail The email address by which the user is registered.
@@ -40,13 +42,13 @@ public class UserController {
      * @throws CancelActionException if login wasn't accepted.
      */
     public void login(String userEmail, String password) throws CancelActionException{
-        //UserManager userManager = (UserManager)(DaoFactory.getDao(rb.getString(USER_MANAGER_IMPL_K))); userManager no es un DAO ???
+        UserManager userManager = (UserManager)(DaoFactory.getDao(rb.getString(USER_MANAGER_IMPL_K)));
         // Creates an User with Role User, invokes UserManager to do the login.
-        Role roleUser = new Role(Role.roleType.USER);//ver bien!!!
-        User user = new UserController(userEmail, userEmail, password, roleUser);//supuse mail y name iguales
+        Role roleUser = new Role((long)0);//ver bien!!!
+        User user = new User(userEmail, userEmail, password, roleUser);//supuse mail y name iguales
         try{
-            String token = userManager.login(user); //el token no lo deberia manejar el usermanager?????
-        }catch(InvalidUserException iue){
+            token = userManager.login(user);
+        } catch (InvalidUserException e) {
             throw new CancelActionException("user or password invalid");
         }
     }
