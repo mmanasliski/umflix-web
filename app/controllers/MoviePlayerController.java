@@ -1,8 +1,15 @@
 package controllers;
 
 import dao.DaoFactory;
+import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
+import edu.umflix.exceptions.MovieNotFoundException;
+import edu.umflix.model.Clip;
+import edu.umflix.model.ClipData;
 import exception.CancelActionException;
-import mockclasses.*;
+import model.MovieManager;
+import model.exceptions.UserNotAllowedException;
+
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -34,10 +41,32 @@ public class MoviePlayerController {
      * @throws CancelActionException when the token is no longer valid.
      */
     private void startMovie(Long movieId, String token) throws CancelActionException{
+        this.token=token; // Sets the token of the user that is watching this movie.
         MovieManager movieDao = (MovieManager)(DaoFactory.getDao(rb.getString(MOVIE_MANAGER_IMPL_K)));
-             // Uses MovieManager's getMovie to set the variable movie
-             // Asks MovieManager for first ClipData and shows it
-             // When it finishes ask for ad and shows, then clip, then add till movie finishes
+        ClipData currentClip;
+        ClipData nextClip;
+        int clipIndex=0;
+
+        try {
+            try {
+                movie = movieDao.getMovie(token, movieId); // Sets the movie the user is watching.
+            } catch (MovieNotFoundException e){
+                throw new CancelActionException("The movie couldn't be found, please choose another movie.");
+            } catch (UserNotAllowedException e){
+                throw new CancelActionException("You are not allowed to see this movie.");
+            }
+
+            try {
+                nextClip = movieDao.getClipData(token,movie.get(clipIndex).getId());
+            } catch (FileNotFoundException e){
+                throw new CancelActionException("Error getting next clip.");
+            }
+        } catch (InvalidTokenException e){
+            throw new CancelActionException("Your session is no longer valid, please login again.");
+        }
+
+        // Asks MovieManager for first ClipData and shows it
+        // When it finishes ask for ad and shows, then clip, then add till movie finishes
     }
 
     /*
