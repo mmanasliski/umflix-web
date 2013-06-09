@@ -91,7 +91,7 @@ public class UserController {
             try{
                  User user = authHandler.getUserOfToken(token);   //tries to get the user from token
                 try {
-                    userManager.update(password,user,newPassword);
+                    userManager.update(token,user,newPassword);
                     updated=true;
                 } catch (InvalidUserException e) {
                 } catch (PermissionDeniedException e) {
