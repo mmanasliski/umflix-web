@@ -124,7 +124,7 @@ public class UserController {
         List<Movie> movieList;
         //CatalogServiceImpl catalogService = new CatalogServiceImpl();
         try{
-            movieList = catalogService.search("null", "null");
+            movieList = catalogService.search(null, null);
         } catch (InvalidTokenException e) {
             throw new InvalidTokenException();
         }
@@ -136,7 +136,7 @@ public class UserController {
      * @return Returns the movie that matches they key
      * @throws CancelActionException if there weren't movies matching the key.
      */
-    public Movie searchMovie(String key) throws CancelActionException, InvalidTokenException {
+    public List<Movie> searchMovie(String key) throws CancelActionException, InvalidTokenException {
 
         // Uses the web service to access to CatalogService and searches with the key parameter
         // Mock implementation
@@ -145,12 +145,11 @@ public class UserController {
         try{
             List<Movie> movieList = catalogService.search(key, this.token);
             if(!movieList.isEmpty()){
-                movie = movieList.get(0);
+               return movieList;
             }else throw new CancelActionException("Movie not found");
         } catch (InvalidTokenException e) {
             throw new InvalidTokenException();
         }
-        return movie;
     }
 
     /*

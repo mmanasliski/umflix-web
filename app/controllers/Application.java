@@ -1,5 +1,6 @@
 package controllers;
 
+import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
 import edu.umflix.model.Movie;
 import exception.CancelActionException;
 
@@ -23,6 +24,7 @@ public class Application extends Controller {
     private static final String SUCCEDED_TO_CHANGE_PASSWORD ="You have updated your password succesfully";
     private static final String MOVIE_NOT_FOUND = "Movie not found";
     private static final String MOVIE_NOT_AVAILABLE  = "Movie is not available now, try again later";
+    private static final String NO_MOVIES = "No movies to show";
     static  String token=""; //poner constante con invalid
     static UserController userController= new UserController();  //cambiar por metodo getBean???
 
@@ -58,7 +60,7 @@ public class Application extends Controller {
     }
 
     public static class MovieChooser{
-        public String movieId;
+        public long movieId;
     }
 
     public static Result index() {
@@ -127,34 +129,50 @@ public class Application extends Controller {
     public static Result showMovies(){
         String message;
         List<Movie> movies = null;
-        Form<ShowMovies> form = form(ShowMovies.class).bindFromRequest();
-        ShowMovies information = form.get();
-        if(!usercontroller.showMovies().isEmpty()){
-            movies = usercontroller.showMovies();
-            return ok(showMovies.render(movies);
+        try {
+            if(!userController.showMovies().isEmpty()){
+                movies = userController.showMovies();
+                return ok(showMovies.render(movies);
+            }
+            message=NO_MOVIES;
+            return ok(homePage.render(message));
+        } catch (InvalidTokenException e) {
+            return ok(index.render(form(Login.class)));
         }
-        return ok(index.render(form(ShowMovies.class)));
+
     }
 
     public static Result searchMovie(){
         String message;
+        List<Movie> movies = null;
         Form<MovieSearcher> form = form(MovieSearcher.class).bindFromRequest();
         MovieSearcher information = form.get();
-        if(usercontroller.searchMovie(information.key)){
-            return ok(showMovie.render(form(MovieSearcher.class)));
+        try {
+            if(!userController.searchMovie(information.key).isEmpty()){
+                movies= userController.searchMovie(information.key);
+                return ok(showMovies.render(movies));
+            }
+            message=MOVIE_NOT_FOUND;
+            return ok(homePage.render(message));
+        } catch (CancelActionException e) {
+            message=MOVIE_NOT_FOUND;
+            return ok(homePage.render(message));
+        } catch (InvalidTokenException e) {
+            return ok(index.render(form(Login.class)));
         }
-        message=MOVIE_NOT_FOUND;
-        return ok(index.render(form(MovieSearcher.class)));
     }
 
     public static Result chooseMovie(){
         String message;
         Form<MovieChooser> form = form(MovieChooser.class).bindFromRequest();
         MovieChooser information = form.get();
-        if(usercontroller.chooseMovie(information.movieId)){
-            return ok(movieView.render(form(MovieChooser.class)));
+        try {
+                return ok(movieView.render(form(MovieChooser.class)));
+
+        } catch (CancelActionException e) {
+            message=MOVIE_NOT_AVAILABLE;
+            return ok(homePage.render(message));
         }
-        message=MOVIE_NOT_AVAILABLE;
-        return ok(index.render(form(MovieChooser.class)));
+
     }
 }
