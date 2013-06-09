@@ -40,8 +40,9 @@ public class MoviePlayerController {
      * Starts playing the movie.
      * @throws CancelActionException when the token is no longer valid.
      */
-    private void startMovie(Long movieId, String token) throws CancelActionException{
-        this.token=token; // Sets the token of the user that is watching this movie.
+
+    protected void startMovie(Long movieId, String token) throws CancelActionException{
+    //private void startMovie(Long movieId, String token) throws CancelActionException{
         MovieManager movieDao = (MovieManager)(DaoFactory.getDao(rb.getString(MOVIE_MANAGER_IMPL_K)));
         ClipData currentClip;
         ClipData nextClip;

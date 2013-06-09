@@ -1,13 +1,19 @@
 package controllers;
 
+import edu.umflix.model.Movie;
 import exception.CancelActionException;
+
 import play.data.*;
 import play.mvc.*;
 import play.*;
 import play.data.validation.Constraints.*;
 import views.html.*;
 
-import static play.data.Form.*;
+import play.data.Form;
+import play.mvc.Controller;
+import play.mvc.Result;
+
+import java.util.List;
 
 public class Application extends Controller {
 
@@ -15,6 +21,8 @@ public class Application extends Controller {
     private static final String PASSWORD_MISSMATCH ="The passwords you inserted did not match";
     private static final String SUCCEDED =" created. Please head back to login page and sign in !";
     private static final String SUCCEDED_TO_CHANGE_PASSWORD ="You have updated your password succesfully";
+    private static final String MOVIE_NOT_FOUND = "Movie not found";
+    private static final String MOVIE_NOT_AVAILABLE  = "Movie is not available now, try again later";
     static  String token=""; //poner constante con invalid
     static UserController userController= new UserController();  //cambiar por metodo getBean???
 
@@ -39,6 +47,18 @@ public class Application extends Controller {
         public String oldPassword;
         public String newPassword;
         public String newPasswordConfirm;
+    }
+
+    public static class ShowMovies{
+
+    }
+
+    public static class MovieSearcher{
+        public String key;
+    }
+
+    public static class MovieChooser{
+        public String movieId;
     }
 
     public static Result index() {
@@ -102,5 +122,39 @@ public class Application extends Controller {
             return ok(changePasswordIndex.render(form(PasswordChanger.class)));
         }
 
+    }
+
+    public static Result showMovies(){
+        String message;
+        List<Movie> movies = null;
+        Form<ShowMovies> form = form(ShowMovies.class).bindFromRequest();
+        ShowMovies information = form.get();
+        if(!usercontroller.showMovies().isEmpty()){
+            movies = usercontroller.showMovies();
+            return ok(showMovies.render(movies);
+        }
+        return ok(index.render(form(ShowMovies.class)));
+    }
+
+    public static Result searchMovie(){
+        String message;
+        Form<MovieSearcher> form = form(MovieSearcher.class).bindFromRequest();
+        MovieSearcher information = form.get();
+        if(usercontroller.searchMovie(information.key)){
+            return ok(showMovie.render(form(MovieSearcher.class)));
+        }
+        message=MOVIE_NOT_FOUND;
+        return ok(index.render(form(MovieSearcher.class)));
+    }
+
+    public static Result chooseMovie(){
+        String message;
+        Form<MovieChooser> form = form(MovieChooser.class).bindFromRequest();
+        MovieChooser information = form.get();
+        if(usercontroller.chooseMovie(information.movieId)){
+            return ok(movieView.render(form(MovieChooser.class)));
+        }
+        message=MOVIE_NOT_AVAILABLE;
+        return ok(index.render(form(MovieChooser.class)));
     }
 }

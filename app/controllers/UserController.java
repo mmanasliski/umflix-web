@@ -2,15 +2,23 @@ package controllers;
 
 import dao.DaoFactory;
 import edu.umflix.authenticationhandler.AuthenticationHandler;
+
+import edu.um.arq.umflix.catalogservice.impl.CatalogServiceImpl;
+
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
 import edu.umflix.authenticationhandler.exceptions.InvalidUserException;
+import edu.umflix.model.Movie;
 import edu.umflix.model.Role;
 import edu.umflix.model.User;
 import edu.umflix.usermanager.UserManager;
 import edu.umflix.usermanager.exceptions.*;
 import exception.CancelActionException;
+
 import mockclasses.Movie;
 import mockclasses.MovieManager;
+
+import mockclasses.AuthenticationHandler;
+
 
 import java.util.List;
 import java.util.ResourceBundle;
@@ -33,14 +41,18 @@ public class UserController {
     // Key for the name of the classes that implement UserManager and AuthenticationHandler
     private static final String USER_MANAGER_IMPL_K = "USER_MANAGER_IMPL";
     private static final String AUTH_HANDLER_IMPL_K = "AUTH_HANDLER_IMPL";
+
     static AuthenticationHandler authHandler = (AuthenticationHandler)(DaoFactory.getDao(rb.getString(AUTH_HANDLER_IMPL_K)));
     static UserManager userManager = (UserManager)(DaoFactory.getDao(rb.getString(USER_MANAGER_IMPL_K)));
+
+    private static final String MOVIE_MANAGER_IMPL_K = "MOVIE_MANAGER_IMPL";
+
+
     // Indicates if the WebApp has a session opened
     private boolean sessionOpened;
 
     // User's session token
     private String token;
-
 
 
     /*
@@ -111,10 +123,18 @@ public class UserController {
     /*
     * @ UMFlix's movies
     */
-    public List<Movie> showMovies(){
+    public List<Movie> showMovies() throws InvalidTokenException {
         // Uses the web service to access to CatalogService and searches with NULL parameters
         // Mock implementation
-        return null;
+
+        List<Movie> movieList;
+        CatalogServiceImpl catalogService = new CatalogServiceImpl();
+        try{
+            movieList = catalogService.search("null", "null");
+        } catch (InvalidTokenException e) {
+            throw new InvalidTokenException();
+        }
+        return movieList;
     }
 
     /*
@@ -122,19 +142,30 @@ public class UserController {
      * @return Returns the movie that matches they key
      * @throws CancelActionException if there weren't movies matching the key.
      */
-    public Movie searchMovie(String key) throws CancelActionException{
+    public Movie searchMovie(String key) throws CancelActionException, InvalidTokenException {
 
         // Uses the web service to access to CatalogService and searches with the key parameter
         // Mock implementation
-        return null;
-
+        Movie movie;
+        CatalogServiceImpl catalogService = new CatalogServiceImpl();
+        try{
+            List<Movie> movieList = catalogService.search(key, this.token);
+            if(!movieList.isEmpty()){
+                movie = movieList.get(0);
+            }else throw new CancelActionException("Movie not found");
+        } catch (InvalidTokenException e) {
+            throw new InvalidTokenException();
+        }
+        return movie;
     }
 
     /*
      * Creates a new view of the movie.
      */
-    public void chooseMovie(){
-         // Creates a new MoviePlayerController with movieId and token parameters and calls startMovie()
+    public void chooseMovie(Long movieId) throws CancelActionException {
+        // Creates a new MoviePlayerController with movieId and token parameters and calls startMovie()
+        MoviePlayerController moviePlayerController = new MoviePlayerController(this.token, movieId);
+        moviePlayerController.startMovie(movieId, this.token);
     }
 
 }
