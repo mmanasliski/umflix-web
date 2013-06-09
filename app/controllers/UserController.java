@@ -33,9 +33,11 @@ public class UserController {
     // Key for the name of the classes that implement UserManager and AuthenticationHandler
     private static final String USER_MANAGER_IMPL_K = "USER_MANAGER_IMPL";
     private static final String AUTH_HANDLER_IMPL_K = "AUTH_HANDLER_IMPL";
+    private static final String CATALOG_SERVICE_IMPL_K = "CATALOG_SERVICE_IMPL";
 
     static AuthenticationHandler authHandler = (AuthenticationHandler)(DaoFactory.getDao(rb.getString(AUTH_HANDLER_IMPL_K)));
     static UserManager userManager = (UserManager)(DaoFactory.getDao(rb.getString(USER_MANAGER_IMPL_K)));
+    static CatalogServiceImpl catalogService = (CatalogServiceImpl)(DaoFactory.getDao(rb.getString(CATALOG_SERVICE_IMPL_K)));
 
     private static final String MOVIE_MANAGER_IMPL_K = "MOVIE_MANAGER_IMPL";
 
@@ -120,7 +122,7 @@ public class UserController {
         // Mock implementation
 
         List<Movie> movieList;
-        CatalogServiceImpl catalogService = new CatalogServiceImpl();
+        //CatalogServiceImpl catalogService = new CatalogServiceImpl();
         try{
             movieList = catalogService.search("null", "null");
         } catch (InvalidTokenException e) {
@@ -139,7 +141,7 @@ public class UserController {
         // Uses the web service to access to CatalogService and searches with the key parameter
         // Mock implementation
         Movie movie;
-        CatalogServiceImpl catalogService = new CatalogServiceImpl();
+        //CatalogServiceImpl catalogService = new CatalogServiceImpl();
         try{
             List<Movie> movieList = catalogService.search(key, this.token);
             if(!movieList.isEmpty()){
