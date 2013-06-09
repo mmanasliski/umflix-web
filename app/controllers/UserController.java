@@ -51,8 +51,7 @@ public class UserController {
     public void login(String userEmail, String password) throws CancelActionException{
 
         // Creates an User with Role User, invokes UserManager to do the login.
-        Role roleUser = new Role((long)0);//ver bien!!!
-        User user = new User(userEmail, userEmail, password, roleUser);//supuse mail y name iguales
+        User user = new User(userEmail, null, password, null);//supuse mail y name iguales
         try{
             token = userManager.login(user);
         } catch (InvalidUserException e) {
@@ -66,7 +65,8 @@ public class UserController {
      * @throws CancelActionException if registration wasn't accepted.
      */
     public void register(String userName, String userEmail, String password) throws CancelActionException{
-         User user=new User(userEmail,null,password,null);
+        Role roleUser = new Role((long)0);
+        User user=new User(userEmail,userName,password,roleUser);
         try {
             userManager.register(user);
         } catch (InvalidEmailException e) {
