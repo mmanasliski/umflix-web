@@ -66,8 +66,7 @@ public class UserController {
      * @throws CancelActionException if registration wasn't accepted.
      */
     public void register(String userName, String userEmail, String password) throws CancelActionException{
-        Role roleUser = new Role((long)0);
-        User user=new User(userEmail,userName,password,roleUser);
+         User user=new User(userEmail,null,password,null);
         try {
             userManager.register(user);
         } catch (InvalidEmailException e) {
