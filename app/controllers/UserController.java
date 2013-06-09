@@ -1,10 +1,8 @@
 package controllers;
 
 import dao.DaoFactory;
-import edu.umflix.authenticationhandler.AuthenticationHandler;
-
 import edu.um.arq.umflix.catalogservice.impl.CatalogServiceImpl;
-
+import edu.umflix.authenticationhandler.AuthenticationHandler;
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
 import edu.umflix.authenticationhandler.exceptions.InvalidUserException;
 import edu.umflix.model.Movie;
@@ -13,12 +11,6 @@ import edu.umflix.model.User;
 import edu.umflix.usermanager.UserManager;
 import edu.umflix.usermanager.exceptions.*;
 import exception.CancelActionException;
-
-import mockclasses.Movie;
-import mockclasses.MovieManager;
-
-import mockclasses.AuthenticationHandler;
-
 
 import java.util.List;
 import java.util.ResourceBundle;
