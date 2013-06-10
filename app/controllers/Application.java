@@ -3,7 +3,6 @@ package controllers;
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
 import edu.umflix.model.Movie;
 import exception.CancelActionException;
-
 import play.data.*;
 import play.mvc.*;
 import play.*;
@@ -132,7 +131,7 @@ public class Application extends Controller {
         try {
             if(!userController.showMovies().isEmpty()){
                 movies = userController.showMovies();
-                return ok(showMovies.render(movies);
+                return ok(showMovies.render(movies));
             }
             message=NO_MOVIES;
             return ok(homePage.render(message));

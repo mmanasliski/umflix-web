@@ -23,7 +23,7 @@ import java.util.ResourceBundle;
 
 public class UserController {
     // Configuration file name
-    private static final String PROPERTIES = "dao_factory";
+    private static final String PROPERTIES = "conf.dao_factory";
     private static final String INVALID_EMAIL ="The email you submited is not valid.";
     private static final String INVALID_PASSWD ="Please choose a valid password";
     private static final String INVALID_ROLE ="Please retry the registration process.";
