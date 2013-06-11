@@ -2,20 +2,23 @@
 
 @main("HomePage : UMFlix") {
 
-@message
 
 
-<p class="buttons">
+
+<p class="buttons" align="center">
     <a href="@routes.Application.index">Back to the form</a>
 </p>
-<p class="buttons">
+<p class="buttons" align="center">
     <a href="@routes.Application.changePassword">Change my password</a>
 </p>
-<p class="buttons">
+
+<p class="buttons" align="center">
     <a href="@routes.Application.showMovies">Show all movies</a>
 </p>
-<form action="@routes.Application.searchMovie()" method="post">
+<form action="@routes.Application.searchMovie()" method="post" align="center">
     <input name="search movie">
     <input type="submit">
 </form>
+<h1 align="center">@message</a></h1>
+
 }

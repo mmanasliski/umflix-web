@@ -1,13 +1,12 @@
-@(movieListFromMyController: List[Movie])
+@(movieListFromMyController: List[edu.umflix.model.Movie])
+
 
 @for(movie <- movieListFromMyController){
 <div class="movie">
-    <h2>@movie.name</h2>
-    <p>@movie.description</p>
-    <p>@movie.director</p>
-    <p>@movie.cast</p>
-    <p>@movie.genre</p>
-    <p>@movie.duration</p>
+    <h2><a href="@routes.Application.chooseMovie(movie.getId())">@movie.getTitle()</a></h2>
+    <p>@movie.getDirector()</p>
+    <p>@movie.getGenre()</p>
+    <p>@movie.getDuration()</p>
 </div>
 }
 

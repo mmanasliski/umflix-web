@@ -5,6 +5,7 @@
 # Home page
 GET     /                           controllers.Application.index()
 POST   /homePage                    controllers.Application.login
+
 GET    /changePasswordIndex         controllers.Application.changePassword
 POST   /changePassword              controllers.Application.changeMyPassword
 
@@ -13,10 +14,11 @@ GET    /registerIndex               controllers.Application.registerForm
 POST   /register                    controllers.Application.registering
 
 #Movies
-
+GET     /showMovies                  controllers.Application.showMovies
 POST    /showMovies                  controllers.Application.showMovies
 POST    /showMovies                  controllers.Application.searchMovie
-POST    /movieView                   controllers.Application.chooseMovie
+
+POST    /movieView                   controllers.Application.chooseMovie(movieId: Long)
 
 
 # Map static resources from the /public folder to the /assets URL path

@@ -1,7 +1,7 @@
 package controllers;
 
 import dao.DaoFactory;
-import edu.um.arq.umflix.catalogservice.impl.CatalogServiceImpl;
+import edu.um.arq.umflix.catalogservice.CatalogService;
 import edu.umflix.authenticationhandler.AuthenticationHandler;
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
 import edu.umflix.authenticationhandler.exceptions.InvalidUserException;
@@ -37,7 +37,7 @@ public class UserController {
 
     static AuthenticationHandler authHandler = (AuthenticationHandler)(DaoFactory.getDao(rb.getString(AUTH_HANDLER_IMPL_K)));
     static UserManager userManager = (UserManager)(DaoFactory.getDao(rb.getString(USER_MANAGER_IMPL_K)));
-    static CatalogServiceImpl catalogService = (CatalogServiceImpl)(DaoFactory.getDao(rb.getString(CATALOG_SERVICE_IMPL_K)));
+    static CatalogService catalogService = (CatalogService)(DaoFactory.getDao(rb.getString(CATALOG_SERVICE_IMPL_K)));
 
     private static final String MOVIE_MANAGER_IMPL_K = "MOVIE_MANAGER_IMPL";
 
@@ -45,8 +45,12 @@ public class UserController {
     // Indicates if the WebApp has a session opened
     private boolean sessionOpened;
 
-    // User's session token
+   // User's session token
     private String token;
+
+    public String getToken() {
+        return token;
+    }
 
 
     /*

@@ -8,10 +8,21 @@ import play.mvc.*;
 import play.*;
 import play.data.validation.Constraints.*;
 import views.html.*;
+import static play.data.Form.*;
 
 import play.data.Form;
-import play.mvc.Controller;
 import play.mvc.Result;
+
+import play.*;
+import play.mvc.*;
+import play.data.*;
+import static play.data.Form.*;
+import play.data.validation.Constraints.*;
+
+import java.util.*;
+
+import views.html.*;
+
 
 import java.util.List;
 
@@ -24,8 +35,7 @@ public class Application extends Controller {
     private static final String MOVIE_NOT_FOUND = "Movie not found";
     private static final String MOVIE_NOT_AVAILABLE  = "Movie is not available now, try again later";
     private static final String NO_MOVIES = "No movies to show";
-    static  String token=""; //poner constante con invalid
-    static UserController userController= new UserController();  //cambiar por metodo getBean???
+    static UserController userController= new UserController();
 
     /**
      * Describes the login form.
@@ -161,17 +171,15 @@ public class Application extends Controller {
         }
     }
 
-    public static Result chooseMovie(){
+    public static Result chooseMovie(Long movieId){
         String message;
-        Form<MovieChooser> form = form(MovieChooser.class).bindFromRequest();
-        MovieChooser information = form.get();
+        MoviePlayerController moviePlayerController = new MoviePlayerController(userController.getToken(), movieId);
         try {
-                return ok(movieView.render(form(MovieChooser.class)));
-
+                moviePlayerController.startMovie(movieId,userController.getToken());
+                return ok(movieView.render());
         } catch (CancelActionException e) {
-            message=MOVIE_NOT_AVAILABLE;
-            return ok(homePage.render(message));
+                        return ok(homePage.render(e.printStackTrace();));
         }
-
+        return TODO;
     }
-}
+} 
