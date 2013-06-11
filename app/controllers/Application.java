@@ -35,6 +35,7 @@ public class Application extends Controller {
     private static final String MOVIE_NOT_FOUND = "Movie not found";
     private static final String MOVIE_NOT_AVAILABLE  = "Movie is not available now, try again later";
     private static final String NO_MOVIES = "No movies to show";
+    private static final String COULD_NOT_CHANGE_PASSWORD ="Please retry changing your password, something went wrong";
     static UserController userController= new UserController();
 
     /**
@@ -127,7 +128,8 @@ public class Application extends Controller {
                 message=SUCCEDED_TO_CHANGE_PASSWORD;
                 return ok(changePassword.render(message));
             } else{
-                return ok(changePasswordIndex.render(form(PasswordChanger.class)));
+                message=COULD_NOT_CHANGE_PASSWORD;
+                return ok(changePassword.render(message));
             }
         }else{
             return ok(changePasswordIndex.render(form(PasswordChanger.class)));

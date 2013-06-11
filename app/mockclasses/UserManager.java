@@ -15,6 +15,9 @@ public class UserManager extends UserManagerImpl {
     public String login(User user) throws InvalidUserException {
         return "token";
     }
+    @Override
+    public void register(User user){
 
+    }
 
 }
