@@ -178,8 +178,7 @@ public class Application extends Controller {
                 moviePlayerController.startMovie(movieId,userController.getToken());
                 return ok(movieView.render());
         } catch (CancelActionException e) {
-                        return ok(homePage.render(e.printStackTrace();));
+                        return ok(homePage.render(e.getMessage()));
         }
-        return TODO;
-    }
+     }
 } 
