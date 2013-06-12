@@ -39,7 +39,7 @@ public class Application extends Controller {
     private static final String COULD_NOT_CHANGE_PASSWORD ="Please retry changing your password, something went wrong";
     static UserController userController= new UserController();
     static MoviePlayerController moviePlayerController=new MoviePlayerController();
-
+    //static OutputStream oStream;
     /**
      * Describes the login form.
      */
@@ -179,12 +179,18 @@ public class Application extends Controller {
         try {
             OutputStream oStream = moviePlayerController.startMovie(movieId,userController.getToken());
             response().setContentType("video/mp4");
+            return ok(movieView.render(oStream));
             // Estuve buscando qué debo poner en la view.scala.html para capturarlo pero no encontré nada
             // probé con @(video: video/mp4), @(video: .mp4) y otros pero todos dan errores.
-            // return ok(movieView.render(oStream));
-            return ok(movieView.render());
+            //return ok(movieView.render());
         } catch (CancelActionException e) {
             return ok(homePage.render(e.getMessage()));
         }
     }
+
+/*    public static Result getLastClip(){
+        response().setContentType("video/mp4");
+        //return ok(movieView.render(oStream));
+        return ok(movieView.render());
+    } */
 } 

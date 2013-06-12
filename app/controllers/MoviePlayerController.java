@@ -22,7 +22,7 @@ import java.util.ResourceBundle;
  */
 public class MoviePlayerController {
         // Configuration file name
-        private static final String PROPERTIES = "dao_factory";
+        private static final String PROPERTIES = "conf.dao_factory";
         private static  ResourceBundle rb = ResourceBundle.getBundle(PROPERTIES);
 
         // Key for the name of the class that implement MovieManager
