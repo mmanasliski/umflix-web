@@ -24,7 +24,7 @@ public class MovieManager implements model.MovieManager {
     }
 
     @Override
-    public ClipData getClipData(String s, Long aLong) throws InvalidTokenException, FileNotFoundException {
+    public ClipData getClipData(String s, Long aLong) throws InvalidTokenException {
         return null;
     }
 

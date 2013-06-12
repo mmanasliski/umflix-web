@@ -9,7 +9,9 @@ import exception.CancelActionException;
 import model.MovieManager;
 import model.exceptions.UserNotAllowedException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -30,24 +32,21 @@ public class MoviePlayerController {
         private String token;
         private Long movieId;
         private List<Clip> movie;
-
-        public MoviePlayerController(String token, Long movieId){
-            this.token=token;
-            this.movieId=movieId;
-        }
+        private int currentClipIndex;
+        private MovieManager movieDao;
 
     /*
      * Starts playing the movie.
      * @throws CancelActionException when the token is no longer valid.
+     *
      */
-
-    protected void startMovie(Long movieId, String token) throws CancelActionException{
-    //private void startMovie(Long movieId, String token) throws CancelActionException{
-        MovieManager movieDao = (MovieManager)(DaoFactory.getDao(rb.getString(MOVIE_MANAGER_IMPL_K)));
-        ClipData currentClip;
-        ClipData nextClip;
-        int clipIndex=0;
-
+    protected OutputStream startMovie(Long movieID, String userToken) throws CancelActionException{
+        ClipData clipData;
+        ByteArrayOutputStream oStream =new ByteArrayOutputStream();
+        movieDao = (MovieManager)(DaoFactory.getDao(rb.getString(MOVIE_MANAGER_IMPL_K)));
+        this.token=userToken;
+        this.movieId=movieID;
+        currentClipIndex=0;
         try {
             try {
                 movie = movieDao.getMovie(token, movieId); // Sets the movie the user is watching.
@@ -56,18 +55,21 @@ public class MoviePlayerController {
             } catch (UserNotAllowedException e){
                 throw new CancelActionException("You are not allowed to see this movie.");
             }
-
-            try {
-                nextClip = movieDao.getClipData(token,movie.get(clipIndex).getId());
-            } catch (FileNotFoundException e){
-                throw new CancelActionException("Error getting next clip.");
-            }
+            clipData = movieDao.getClipData(token,movie.get(currentClipIndex).getId());
         } catch (InvalidTokenException e){
             throw new CancelActionException("Your session is no longer valid, please login again.");
         }
+        byte[] bytes = getBytes(clipData.getBytes());
+        oStream.write(bytes,0,clipData.getBytes().length);
+        return oStream;
+    }
 
-        // Asks MovieManager for first ClipData and shows it
-        // When it finishes ask for ad and shows, then clip, then add till movie finishes
+    private byte[] getBytes(Byte[] bytes){
+        byte[] normalBytes = new byte[bytes.length];
+        for (int i=0;i<bytes.length;i++){
+              normalBytes[i]=bytes[i].byteValue();
+        }
+        return normalBytes;
     }
 
     /*

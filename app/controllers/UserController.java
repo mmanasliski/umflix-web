@@ -161,7 +161,7 @@ public class UserController {
      */
     public void chooseMovie(Long movieId) throws CancelActionException {
         // Creates a new MoviePlayerController with movieId and token parameters and calls startMovie()
-        MoviePlayerController moviePlayerController = new MoviePlayerController(this.token, movieId);
+        MoviePlayerController moviePlayerController = new MoviePlayerController();
         moviePlayerController.startMovie(movieId, this.token);
     }
 

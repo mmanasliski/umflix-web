@@ -19,6 +19,7 @@ import play.data.*;
 import static play.data.Form.*;
 import play.data.validation.Constraints.*;
 
+import java.io.OutputStream;
 import java.util.*;
 
 import views.html.*;
@@ -37,6 +38,7 @@ public class Application extends Controller {
     private static final String NO_MOVIES = "No movies to show";
     private static final String COULD_NOT_CHANGE_PASSWORD ="Please retry changing your password, something went wrong";
     static UserController userController= new UserController();
+    static MoviePlayerController moviePlayerController=new MoviePlayerController();
 
     /**
      * Describes the login form.
@@ -174,13 +176,15 @@ public class Application extends Controller {
     }
 
     public static Result chooseMovie(Long movieId){
-        String message;
-        MoviePlayerController moviePlayerController = new MoviePlayerController(userController.getToken(), movieId);
         try {
-                moviePlayerController.startMovie(movieId,userController.getToken());
-                return ok(movieView.render());
+            OutputStream oStream = moviePlayerController.startMovie(movieId,userController.getToken());
+            response().setContentType("video/mp4");
+            // Estuve buscando qué debo poner en la view.scala.html para capturarlo pero no encontré nada
+            // probé con @(video: video/mp4), @(video: .mp4) y otros pero todos dan errores.
+            // return ok(movieView.render(oStream));
+            return ok(movieView.render());
         } catch (CancelActionException e) {
-                        return ok(homePage.render(e.getMessage()));
+            return ok(homePage.render(e.getMessage()));
         }
-     }
+    }
 } 

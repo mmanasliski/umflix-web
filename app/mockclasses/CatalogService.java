@@ -14,6 +14,6 @@ import java.util.List;
 public class CatalogService implements edu.um.arq.umflix.catalogservice.CatalogService{
     @Override
     public List<Movie> search(String s, String s2) throws DaoException, InvalidTokenException {
-        return Collections.EMPTY_LIST;
+        return null;
     }
 }
