@@ -36,8 +36,10 @@ public class UserController {
     private static final String CATALOG_SERVICE_IMPL_K = "CATALOG_SERVICE_IMPL";
 
     static AuthenticationHandler authHandler = (AuthenticationHandler)(DaoFactory.getDao(rb.getString(AUTH_HANDLER_IMPL_K)));
-    static UserManager userManager = (UserManager)(DaoFactory.getDao(rb.getString(USER_MANAGER_IMPL_K)));
-    static CatalogService catalogService = (CatalogService)(DaoFactory.getDao(rb.getString(CATALOG_SERVICE_IMPL_K)));
+    //static UserManager userManager = (UserManager)(DaoFactory.getDao(rb.getString(USER_MANAGER_IMPL_K)));
+    //static CatalogService catalogService = (CatalogService)(DaoFactory.getDao(rb.getString(CATALOG_SERVICE_IMPL_K)));
+    static UserManager userManager=new mockclasses.UserManager();
+    static CatalogService catalogService=new mockclasses.CatalogService();
 
     private static final String MOVIE_MANAGER_IMPL_K = "MOVIE_MANAGER_IMPL";
 
