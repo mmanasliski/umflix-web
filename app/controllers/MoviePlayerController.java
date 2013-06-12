@@ -58,8 +58,6 @@ public class MoviePlayerController {
             clipData = movieDao.getClipData(token,movie.get(currentClipIndex).getId());
         } catch (InvalidTokenException e){
             throw new CancelActionException("Your session is no longer valid, please login again.");
-        } catch (FileNotFoundException e) {
-            throw new CancelActionException("There was an error getting the video");
         }
         byte[] bytes = getBytes(clipData.getBytes());
         oStream.write(bytes,0,clipData.getBytes().length);

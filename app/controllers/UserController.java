@@ -31,8 +31,8 @@ public class UserController {
     private static ResourceBundle rb = ResourceBundle.getBundle(PROPERTIES);
 
     // Key for the name of the classes that implement UserManager and AuthenticationHandler
-    private static final String USER_MANAGER_IMPL_K = "USER_MANAGER_IMPL";
     private static final String AUTH_HANDLER_IMPL_K = "AUTH_HANDLER_IMPL";
+    private static final String USER_MANAGER_IMPL_K = "USER_MANAGER_IMPL";
     private static final String CATALOG_SERVICE_IMPL_K = "CATALOG_SERVICE_IMPL";
 
     static AuthenticationHandler authHandler = (AuthenticationHandler)(DaoFactory.getDao(rb.getString(AUTH_HANDLER_IMPL_K)));
@@ -150,7 +150,7 @@ public class UserController {
         //CatalogServiceImpl catalogService = new CatalogServiceImpl();
         try{
             List<Movie> movieList = catalogService.search(key, this.token);
-            if(!movieList.isEmpty()){
+            if(movieList!=null && !movieList.isEmpty()){
                return movieList;
             }else throw new CancelActionException("Movie not found");
         } catch (InvalidTokenException e) {

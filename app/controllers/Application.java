@@ -20,9 +20,7 @@ import play.data.*;
 import static play.data.Form.*;
 import play.data.validation.Constraints.*;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.File;
+import java.io.*;
 import java.util.*;
 
 import views.html.*;
@@ -146,7 +144,7 @@ public class Application extends Controller {
         String message;
         List<Movie> movies = null;
         try {
-            if(!userController.showMovies().isEmpty()){
+            if(userController.showMovies()!=null && !userController.showMovies().isEmpty()){
                 movies = userController.showMovies();
                 return ok(showMovies.render(movies));
             }
@@ -155,6 +153,7 @@ public class Application extends Controller {
         } catch (InvalidTokenException e) {
             return ok(index.render(form(Login.class)));
         }
+
 
     }
 
@@ -180,7 +179,7 @@ public class Application extends Controller {
 
     public static Result chooseMovie(Long movieId){
         try {
-           OutputStream oStream = moviePlayerController.startMovie(movieId,userController.getToken());
+           /*OutputStream*/ oStream = moviePlayerController.startMovie(movieId,userController.getToken());
            response().setContentType("video/mp4");
             //return ok(movieView.render(oStream));
             // Estuve buscando qué debo poner en la view.scala.html para capturarlo pero no encontré nada
@@ -192,12 +191,18 @@ public class Application extends Controller {
     }
 
     public static Result getLastClip(){
-        response().setContentType("video/mp4");
+
+        try {
+            response().setContentType("video/mp4");
+            return ok(new FileInputStream("C:/Users/Juanchi/Downloads/ShortCartoon-Justice.mp4"));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);  //To change body of catch statement use File | Settings | File Templates.
+        }
         //try {
         //    return ok(movieView.render(new File("C:/maven/Husky_Dog_Talking_-_I_love_you_.mp4")));
         //} catch (IOException e ){
         //   return ok(movieView.render());
         //}
-        return ok(movieView.render());
+      //  return ok(movieView.render());
     }
 } 
