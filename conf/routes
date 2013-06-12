@@ -15,7 +15,7 @@ POST   /register                    controllers.Application.registering
 
 #Movies
 GET     /showMovies                  controllers.Application.showMovies
-POST    /showMovies                  controllers.Application.showMovies
+#POST    /showMovies                  controllers.Application.showMovies
 POST    /showMovies                  controllers.Application.searchMovie
 
 POST    /movieView                   controllers.Application.chooseMovie(movieId: Long)

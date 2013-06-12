@@ -1,6 +1,10 @@
-@(video: video/mp4)
+<!DOCTYPE html>
+<html>
+<body>
 
+<video width="640" height="360" controls autoplay>
+    <source src="@routes.Application.getLastClip()" type="video/mp4">
+</video>
 
-
-
-<!--<video width="640" height="360" src="@routes.Application.getLastClip()" id="player1" controls="controls" preload="none"></video>-->
+</body>
+</html>
