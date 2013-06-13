@@ -1,10 +1,29 @@
+@(title: String, next: Boolean)
 
 
-    <!--<video width="2000" height="100" controls autoplay>-->
-    <!--<source src="@routes.Application.getLastClip()" type="video/mp4">-->
-<!--</video>-->
+<h1 align="center">@title</a></h1>
 
-    <iframe src="@routes.Application.getLastClip()"><p class="buttons" align="left">
-        <a href="@routes.Application.index">Head back to login</a>
-    </p>
+@if(next==true) {
+<h2 align="center"></a>
+    <iframe src="@routes.Application.getNextClip()" width="640" height="360">
     </iframe>
+</h2>
+} else {
+<h3 align="center"></a>
+    <iframe src="@routes.Application.getPreviousClip()" width="640" height="360">
+    </iframe>
+</h3>
+}
+
+
+<p class="buttons" align="center">
+    <a href="@routes.Application.index">Next Clip</a>
+</p>
+
+<p class="buttons" align="center">
+    <a href="@routes.Application.index">Previous Clip</a>
+</p>
+
+<p class="buttons" align="center">
+    <a href="@routes.Application.index">Head back to login</a>
+</p>

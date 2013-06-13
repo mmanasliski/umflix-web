@@ -41,6 +41,8 @@ public class Application extends Controller {
     static UserController userController= new UserController();
     static MoviePlayerController moviePlayerController=new MoviePlayerController();
     static OutputStream oStream;
+
+
     /**
      * Describes the login form.
      */
@@ -180,21 +182,18 @@ public class Application extends Controller {
     public static Result chooseMovie(Long movieId){
         try {
            /*OutputStream*/ oStream = moviePlayerController.startMovie(movieId,userController.getToken());
-           response().setContentType("video/mp4");
             //return ok(movieView.render(oStream));
-            // Estuve buscando qué debo poner en la view.scala.html para capturarlo pero no encontré nada
-            // probé con @(video: video/mp4), @(video: .mp4) y otros pero todos dan errores.
-            return ok(movieView.render());
+            return ok(movieView.render(movieId.toString(),true));
         } catch (CancelActionException e) {
             return ok(homePage.render(e.getMessage()));
         }
     }
 
-    public static Result getLastClip(){
+    public static Result getPreviousClip(){
 
         try {
             response().setContentType("video/mp4");
-            return ok(new FileInputStream("C:/Users/Juanchi/Downloads/ShortCartoon-Justice.mp4"));
+            return ok(new FileInputStream("C:/Users/telematica/Desktop/video.mp4"));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -204,5 +203,19 @@ public class Application extends Controller {
         //   return ok(movieView.render());
         //}
       //  return ok(movieView.render());
+    }
+
+    public static Result movieView(){
+        //return ok(movieView.render("Stupid dog.",true));
+        return ok(movieView.render("Stupid dog.",true));
+    }
+
+    public static Result getNextClip(){
+        try {
+            response().setContentType("video/mp4");
+            return ok(new FileInputStream("C:/Users/telematica/Desktop/video.mp4"));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 } 

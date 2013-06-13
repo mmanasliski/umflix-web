@@ -19,7 +19,9 @@ GET     /showMovies                  controllers.Application.showMovies
 POST    /showMovies                  controllers.Application.searchMovie
 
 POST    /movieView                   controllers.Application.chooseMovie(movieId: Long)
-GET     /movieView                   controllers.Application.getLastClip()
+GET     /movieView                   controllers.Application.movieView
+GET     /video                       controllers.Application.getNextClip
+GET     /video                       controllers.Application.getPreviousClip
 
 
 # Map static resources from the /public folder to the /assets URL path
