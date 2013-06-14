@@ -17,9 +17,11 @@ import edu.umflix.usermanager.exceptions.InvalidRoleException;
 import exception.CancelActionException;
 import org.junit.Test;
 import org.mockito.Mockito;
-import edu.umflix.authenticationhandler.impl.AuthenticationHandlerImpl;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class UserControllerTest {
@@ -29,11 +31,26 @@ public class UserControllerTest {
 +     *
 +     */
 
+    private static final String INVALID_EMAIL ="The email you submited is not valid.";
+    private static final String INVALID_PASSWD ="Please choose a valid password";
+    private static final String INVALID_ROLE ="Please retry the registration process.";
+    private static final String EMAIL_TAKEN ="Email already taken, choose another one";
 
     class UserControllerMock extends UserController {
-        private AuthenticationHandler authHandler = Mockito.mock(AuthenticationHandlerImpl.class);
-        private UserManager userManager = Mockito.mock(UserManager.class);
+        AuthenticationHandler getAuthHandler() {
+            return authHandler;
+        }
+        UserManager getUserManager() {
+            return userManager;
+        }
+
+        public UserControllerMock(){
+            this.authHandler=Mockito.mock(AuthenticationHandlerImpl.class);
+            this.userManager=Mockito.mock(UserManager.class);
+        }
     }
+
+
 
     @Test
     public void testLogin(){
@@ -48,7 +65,7 @@ public class UserControllerTest {
             fail();
         }
         try {
-            Mockito.verify(testedMock.userManager).login(user);
+            verify(testedMock.userManager).login(user);
         } catch (InvalidUserException e) {
             fail();
         }
@@ -56,19 +73,39 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRegister(){
+    public void testLoginInvalidUser(){
+        Role roleUser = new Role((long)0);
+        UserController testedMock= new UserControllerMock();
+        String userEmail="noexisto@gmail.com";
+        String password="password";
+        User user = new User(userEmail, null, password, roleUser);
+        try {
+            doThrow(new InvalidUserException()).when(testedMock.userManager).login(user);
+        } catch (InvalidUserException e) {
+            fail();
+        }
+        try {
+            testedMock.login(userEmail,password);
+        } catch (Exception e) {
+            assertTrue(e instanceof CancelActionException);
+        }
+    }
+
+    @Test
+    public void testRegisterNewUser(){
         UserControllerMock testedMock = new UserControllerMock();
-        String userEmail="";
-        String name="";
-        String password="";
-        User user = new User(userEmail, name, password, null);
+        String userEmail="nuevo@gmail.com";
+        String name="Nuevito";
+        String password="soynuevo";
+        Role roleUser = new Role((long)0);
+        User user = new User(userEmail, name, password, roleUser);
         try {
             testedMock.register(userEmail,name,password);
         } catch (CancelActionException e) {
             fail();
         }
         try {
-            Mockito.verify(testedMock.userManager).register(user);
+            verify(testedMock.userManager).register(user);
         } catch (InvalidEmailException e) {
             fail();
         } catch (InvalidPasswordException e) {
@@ -77,6 +114,112 @@ public class UserControllerTest {
             fail();
         } catch (EmailAlreadyTakenException e) {
             fail();
+        }
+    }
+
+    @Test
+    public void testRegisterInvalidEmail(){
+        Role roleUser = new Role((long)0);
+        UserController testedMock= new UserControllerMock();
+        String userEmail="invalido@gmail.com";
+        String password="password";
+        String name="nombre";
+        User user = new User(userEmail, name, password, roleUser);
+        try {
+            doThrow(new InvalidEmailException()).when(testedMock.userManager).register(user);
+        } catch (InvalidEmailException e) {
+            fail();
+        } catch (InvalidPasswordException e) {
+            fail();
+        } catch (InvalidRoleException e) {
+            fail();
+        } catch (EmailAlreadyTakenException e) {
+            fail();
+        }
+        try {
+            testedMock.register(name,userEmail,password);
+        } catch (Exception e) {
+            assertTrue(e instanceof CancelActionException);
+            assertTrue(e.getMessage().equals(INVALID_EMAIL));
+        }
+    }
+
+    @Test
+    public void testRegisterInvalidPassword() {
+        Role roleUser = new Role((long)0);
+        UserController testedMock= new UserControllerMock();
+        String userEmail="valido@gmail.com";
+        String password="";
+        String name="nombre";
+        User user = new User(userEmail, name, password, roleUser);
+        try {
+            doThrow(new InvalidEmailException()).when(testedMock.userManager).register(user);
+        } catch (InvalidEmailException e) {
+            fail();
+        } catch (InvalidPasswordException e) {
+            fail();
+        } catch (InvalidRoleException e) {
+            fail();
+        } catch (EmailAlreadyTakenException e) {
+            fail();
+        }
+        try {
+            testedMock.register(name,userEmail,password);
+        } catch (Exception e) {
+            assertTrue(e instanceof CancelActionException);
+            assertTrue(e.getMessage().equals(INVALID_PASSWD));
+        }
+    }
+    @Test
+    public void testRegisterInvalidRole() {
+        Role roleUser = new Role((long)8);
+        UserController testedMock= new UserControllerMock();
+        String userEmail="valido@gmail.com";
+        String password="secreta";
+        String name="nombre";
+        User user = new User(userEmail, name, password, roleUser);
+        try {
+            doThrow(new InvalidRoleException()).when(testedMock.userManager).register(user);
+        } catch (InvalidEmailException e) {
+            fail();
+        } catch (InvalidPasswordException e) {
+            fail();
+        } catch (InvalidRoleException e) {
+            fail();
+        } catch (EmailAlreadyTakenException e) {
+            fail();
+        }
+        try {
+            testedMock.register(name,userEmail,password);
+        } catch (Exception e) {
+            assertTrue(e instanceof CancelActionException);
+            assertTrue(e.getMessage().equals(INVALID_ROLE));
+        }
+    }
+    @Test
+    public void testRegisterEmailTaken() {
+        Role roleUser = new Role((long)0);
+        UserController testedMock= new UserControllerMock();
+        String userEmail="valido@gmail.com";
+        String password="secreta";
+        String name="nombre";
+        User user = new User(userEmail, name, password, roleUser);
+        try {
+            doThrow(new EmailAlreadyTakenException()).when(testedMock.userManager).register(user);
+        } catch (InvalidEmailException e) {
+            fail();
+        } catch (InvalidPasswordException e) {
+            fail();
+        } catch (InvalidRoleException e) {
+            fail();
+        } catch (EmailAlreadyTakenException e) {
+            fail();
+        }
+        try {
+            testedMock.register(name,userEmail,password);
+        } catch (Exception e) {
+            assertTrue(e instanceof CancelActionException);
+            assertTrue(e.getMessage().equals(EMAIL_TAKEN));
         }
     }
 }

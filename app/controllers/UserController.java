@@ -36,11 +36,11 @@ public class UserController {
 //    private static final String MOVIE_MANAGER_IMPL_K = "MOVIE_MANAGER_IMPL";
 
     @EJB(beanName = "AuthenticationService")
-    AuthenticationHandler authHandler;
+    public AuthenticationHandler authHandler;
     @EJB(beanName = "UserManager")
-    UserManager userManager;
+    public UserManager userManager;
     @EJB(beanName = "CatalogService")
-    CatalogService catalogService;
+    public CatalogService catalogService;
 //    static AuthenticationHandler authHandler = (AuthenticationHandler)(DaoFactory.getDao(rb.getString(AUTH_HANDLER_IMPL_K)));
 //    static UserManager userManager = (UserManager)(DaoFactory.getDao(rb.getString(USER_MANAGER_IMPL_K)));
 //    static CatalogService catalogService = (CatalogService)(DaoFactory.getDao(rb.getString(CATALOG_SERVICE_IMPL_K)));
