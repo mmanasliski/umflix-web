@@ -3,6 +3,7 @@ package controllers;
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
 import edu.umflix.model.Movie;
 import exception.CancelActionException;
+import org.apache.commons.io.IOUtils;
 import play.api.mvc.Response;
 import play.data.*;
 import play.mvc.*;
@@ -40,7 +41,7 @@ public class Application extends Controller {
     private static final String COULD_NOT_CHANGE_PASSWORD ="Please retry changing your password, something went wrong";
     static UserController userController= new UserController();
     static MoviePlayerController moviePlayerController=new MoviePlayerController();
-    static OutputStream oStream;
+    static InputStream iStream;
 
 
     /**
@@ -179,43 +180,55 @@ public class Application extends Controller {
         }
     }
 
-    public static Result chooseMovie(Long movieId){
+    public static Result chooseMovie(Long movieId, String movieName){
         try {
-           /*OutputStream*/ oStream = moviePlayerController.startMovie(movieId,userController.getToken());
-            //return ok(movieView.render(oStream));
-            return ok(movieView.render(movieId.toString(),true));
+              moviePlayerController.startMovie(movieId, userController.getToken());
+              return ok(movieView.render(movieName,true));
         } catch (CancelActionException e) {
             return ok(homePage.render(e.getMessage()));
         }
     }
+    public static Result RefreshViewPrevClip(String title){
+        return ok(movieView.render(title,false));
+    }
 
     public static Result getPreviousClip(){
-
+         byte[] bytes;
         try {
+            bytes = moviePlayerController.prevClip();
             response().setContentType("video/mp4");
-            return ok(new FileInputStream("C:/Users/telematica/Desktop/video.mp4"));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);  //To change body of catch statement use File | Settings | File Templates.
+            return ok(bytes);
+        }catch (CancelActionException e) {
+            return ok(homePage.render(e.getMessage()));  //To change body of catch statement use File | Settings | File Templates.
+        }catch (ClipDoesntExistException e){
+            bytes = moviePlayerController.currentClip();
+            response().setContentType("video/mp4");
+            return ok(bytes);
         }
-        //try {
-        //    return ok(movieView.render(new File("C:/maven/Husky_Dog_Talking_-_I_love_you_.mp4")));
-        //} catch (IOException e ){
-        //   return ok(movieView.render());
-        //}
-      //  return ok(movieView.render());
+
+
     }
 
     public static Result movieView(){
-        //return ok(movieView.render("Stupid dog.",true));
+        return ok(movieView.render("Stupid dog.",true));
+    }
+
+    public static Result RefreshViewNextClip(String title){
         return ok(movieView.render("Stupid dog.",true));
     }
 
     public static Result getNextClip(){
+        byte[] bytes;
         try {
+            bytes = moviePlayerController.nextClip();
             response().setContentType("video/mp4");
-            return ok(new FileInputStream("C:/Users/telematica/Desktop/video.mp4"));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);  //To change body of catch statement use File | Settings | File Templates.
+            return ok(bytes);
+        }catch (CancelActionException e) {
+            return ok(homePage.render(e.getMessage()));  //To change body of catch statement use File | Settings | File Templates.
+        }catch (ClipDoesntExistException e){
+            bytes = moviePlayerController.currentClip();
+            response().setContentType("video/mp4");
+            return ok(bytes);
         }
     }
 } 

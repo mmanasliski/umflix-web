@@ -1,9 +1,10 @@
-@(title: String, next: Boolean)
+@(title: String, isNext: Boolean)
 
 
 <h1 align="center">@title</a></h1>
 
-@if(next==true) {
+
+@if(isNext==true) {
 <h2 align="center"></a>
     <iframe src="@routes.Application.getNextClip()" width="640" height="360">
     </iframe>
@@ -16,12 +17,13 @@
 }
 
 
+
 <p class="buttons" align="center">
-    <a href="@routes.Application.index">Next Clip</a>
+    <a href="@routes.Application.RefreshViewNextClip(title)">Next Clip</a>
 </p>
 
 <p class="buttons" align="center">
-    <a href="@routes.Application.index">Previous Clip</a>
+    <a href="@routes.Application.RefreshViewPrevClip(title)">Previous Clip</a>
 </p>
 
 <p class="buttons" align="center">

@@ -3,7 +3,7 @@
 
 @for(movie <- movieListFromMyController){
 <div class="movie">
-    <h2><a href="@routes.Application.showMovies()">@movie.getTitle()</a></h2>
+    <h2><a href="@routes.Application.chooseMovie(movie.getId(), movie.getTitle)">@movie.getTitle()</a></h2>
     <p>@movie.getDirector()</p>
     <p>@movie.getGenre()</p>
     <p>@movie.getDuration()</p>

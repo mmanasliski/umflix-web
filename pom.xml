@@ -20,6 +20,13 @@
     </repositories>
 
     <dependencies>
+
+        <!--Dependencie for IOUtils, for converting files into bytes-->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
         <!--
         Add your dependencies here (modules, libraries...).
         Dependencies in the compile scope will be embedded within the application.
