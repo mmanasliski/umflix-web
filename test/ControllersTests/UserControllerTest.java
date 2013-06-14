@@ -56,7 +56,7 @@ public class UserControllerTest {
 
     @Test
     public void testLogin(){
-        Role roleUser = new Role((long)0);
+        Role roleUser = new Role(Role.RoleType.USER.getRole());
         UserControllerMock testedMock = new UserControllerMock();
         String userEmail="hola@gmail.com";
         String password="password";
@@ -77,7 +77,7 @@ public class UserControllerTest {
 
     @Test
     public void testLoginInvalidUser(){
-        Role roleUser = new Role((long)0);
+        Role roleUser = new Role(Role.RoleType.USER.getRole());
         UserController testedMock= new UserControllerMock();
         String userEmail="noexisto@gmail.com";
         String password="password";
@@ -100,7 +100,7 @@ public class UserControllerTest {
         String userEmail="nuevo@gmail.com";
         String name="Nuevito";
         String password="soynuevo";
-        Role roleUser = new Role((long)0);
+        Role roleUser = new Role(Role.RoleType.USER.getRole());
         User user = new User(userEmail, name, password, roleUser);
         try {
             testedMock.register(userEmail,name,password);
@@ -122,7 +122,7 @@ public class UserControllerTest {
 
     @Test
     public void testRegisterInvalidEmail(){
-        Role roleUser = new Role((long)0);
+        Role roleUser = new Role(Role.RoleType.USER.getRole());
         UserController testedMock= new UserControllerMock();
         String userEmail="invalido@gmail.com";
         String password="password";
@@ -149,7 +149,7 @@ public class UserControllerTest {
 
     @Test
     public void testRegisterInvalidPassword() {
-        Role roleUser = new Role((long)0);
+        Role roleUser = new Role(Role.RoleType.USER.getRole());
         UserController testedMock= new UserControllerMock();
         String userEmail="valido@gmail.com";
         String password="";
@@ -175,7 +175,7 @@ public class UserControllerTest {
     }
     @Test
     public void testRegisterInvalidRole() {
-        Role roleUser = new Role((long)8);
+        Role roleUser = new Role(Role.RoleType.USER.getRole());
         UserController testedMock= new UserControllerMock();
         String userEmail="valido@gmail.com";
         String password="secreta";
@@ -201,7 +201,7 @@ public class UserControllerTest {
     }
     @Test
     public void testRegisterEmailTaken() {
-        Role roleUser = new Role((long)0);
+        Role roleUser = new Role(Role.RoleType.USER.getRole());
         UserController testedMock= new UserControllerMock();
         String userEmail="valido@gmail.com";
         String password="secreta";
@@ -253,7 +253,7 @@ public class UserControllerTest {
     @Test
     public void testNullPasswordUpdate(){
         UserController testedMock=new UserControllerMock();
-        Role roleUser = new Role((long)0);
+        Role roleUser = new Role(Role.RoleType.USER.getRole());
         String userEmail="stored@gmail.com";
         String password="secreta";
         String name="nombre";
