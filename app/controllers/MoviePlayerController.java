@@ -6,12 +6,13 @@ import edu.umflix.exceptions.MovieNotFoundException;
 import edu.umflix.model.Clip;
 import edu.umflix.model.ClipData;
 import exception.CancelActionException;
+import exception.ClipDoesntExistException;
 import model.MovieManager;
+import model.exceptions.NoAdsException;
 import model.exceptions.UserNotAllowedException;
+import org.apache.log4j.Logger;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -28,42 +29,101 @@ public class MoviePlayerController {
         // Key for the name of the class that implement MovieManager
         private static final String MOVIE_MANAGER_IMPL_K = "MOVIE_MANAGER_IMPL";
 
+        protected static Logger logger = Logger.getLogger("MoviePlayerController.class");
+
         //Token of the movie of the user that is watching the movie.
         private String token;
         private Long movieId;
         private List<Clip> movie;
-        private int currentClipIndex;
+        private int currentClipIndex=-1; // Starts with -1 because there isn't a movie
         private MovieManager movieDao;
+        private boolean adTime;
 
     /*
      * Starts playing the movie.
      * @throws CancelActionException when the token is no longer valid.
      *
      */
-    protected OutputStream startMovie(Long movieID, String userToken) throws CancelActionException{
-        ClipData clipData;
-        ByteArrayOutputStream oStream =new ByteArrayOutputStream();
+    protected void startMovie(Long movieID, String userToken) throws CancelActionException{
         movieDao = (MovieManager)(DaoFactory.getDao(rb.getString(MOVIE_MANAGER_IMPL_K)));
         this.token=userToken;
         this.movieId=movieID;
-        currentClipIndex=0;
+        adTime=false;
+        // Sets the Clip list of the movie this MoviePlayerController manages.
         try {
-            try {
-                movie = movieDao.getMovie(token, movieId); // Sets the movie the user is watching.
-            } catch (MovieNotFoundException e){
-                throw new CancelActionException("The movie couldn't be found, please choose another movie.");
-            } catch (UserNotAllowedException e){
-                throw new CancelActionException("You are not allowed to see this movie.");
+            movie = movieDao.getMovie(token, movieId); // Sets the movie the user is watching.
+        } catch (MovieNotFoundException e){
+            throw new CancelActionException("The movie couldn't be found, please choose another movie.");
+        } catch (UserNotAllowedException e){
+            throw new CancelActionException("You are not allowed to see this movie.");
+        } catch (InvalidTokenException e){
+            throw new CancelActionException("Your session is no longer valid, please login again.");
+        }
+    }
+
+    public byte[] nextClip() throws CancelActionException, ClipDoesntExistException {
+        if(adTime=false){
+            if((currentClipIndex+1)==movie.size()){
+                throw new ClipDoesntExistException("This movie has no more clips. Thanks for watching.");
             }
+            currentClipIndex++;
+            byte[] currentClip=getCurrentClip();
+            adTime = true;  // The following time nextClip is called it has to return an ad.
+            return currentClip;
+        } else {
+            try {
+                byte[] ad = getAd();
+                adTime = false;
+                return ad;
+            } catch (NoAdsException e){
+                adTime = false;
+                logger.warn("NoAdsException catched while watching movie "+ movieId);
+                return nextClip();
+            }
+        }
+    }
+
+    public byte[] prevClip() throws CancelActionException, ClipDoesntExistException{
+        if(adTime=false){
+            if(currentClipIndex==0){
+                throw new ClipDoesntExistException("This is the first clip of the movie.");
+            }
+            currentClipIndex--;
+            byte[] currentClip=getCurrentClip();
+            adTime = true;  // The following time nextClip is called it has to return an ad.
+            return currentClip;
+        } else {
+            try {
+                byte[] ad = getAd();
+                adTime = false;
+                return ad;
+            } catch (NoAdsException e){
+                adTime = false;
+                logger.warn("NoAdsException catched while watching movie "+ movieId);
+                return prevClip();
+            }
+        }
+    }
+
+    public byte[] getCurrentClip() throws CancelActionException {
+        ClipData clipData;
+        try{
             clipData = movieDao.getClipData(token,movie.get(currentClipIndex).getId());
         } catch (InvalidTokenException e){
             throw new CancelActionException("Your session is no longer valid, please login again.");
-        } catch (FileNotFoundException e) {
-            throw new CancelActionException(e.getMessage());
         }
-        byte[] bytes = getBytes(clipData.getBytes());
-        oStream.write(bytes,0,clipData.getBytes().length);
-        return oStream;
+
+        return getBytes(clipData.getBytes());
+    }
+
+    private byte[] getAd() throws CancelActionException, NoAdsException {
+        ClipData clipData;
+        try{
+            clipData = movieDao.getAd(token, movieId);
+        } catch (InvalidTokenException e){
+            throw new CancelActionException("Your session is no longer valid, please login again.");
+        }
+        return getBytes(clipData.getBytes());
     }
 
     private byte[] getBytes(Byte[] bytes){
@@ -73,36 +133,5 @@ public class MoviePlayerController {
         }
         return normalBytes;
     }
-
-    /*
-     * Continues the playing of the movie.
-     */
-    private void play(){
-
-    }
-
-    /*
-     * Interrupts the playing of the movie.
-     */
-    private void pause(){
-
-    }
-
-    /*
-     *  Stops the playing of the movie and returns to the first clip, paused.
-     */
-    private void stop(){
-
-    }
-
-    /*
-     * @param n The number of clips to go backwards
-     */
-    private void goBackwards(int n){
-        MovieManager movieDao = (MovieManager)(DaoFactory.getDao(rb.getString(MOVIE_MANAGER_IMPL_K)));
-         // Stops the current playing, goes backwards n number of clips.
-        // Starts playing in that clip.
-    }
-
 
 }
