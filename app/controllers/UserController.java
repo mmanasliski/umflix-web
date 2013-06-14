@@ -48,18 +48,27 @@ public class UserController {
     //static UserManager userManager=new mockclasses.UserManager();
     //static CatalogService catalogService=new mockclasses.CatalogService();
 
-    // Indicates if the WebApp has a session opened
+    /**
+     * Indicates if the WebApp has a session opened
+     */
     private boolean sessionOpened;
 
-   // User's session token
-    private String token;
+    /**
+     *User's session token
+     */
+       private String token;
 
+    /**
+     * getter of the token
+     * @return token
+     */
     public String getToken() {
         return token;
     }
 
 
-    /*
+    /**
+     *  Log the user to the system
      * @param userEmail The email address by which the user is registered.
      * @param password The password of the user.
      * @throws CancelActionException if login wasn't accepted.
@@ -75,13 +84,14 @@ public class UserController {
         }
     }
 
-    /*
+    /**
+     * Register an user in the system
      * @param userEmail The email address by which the user wants to be registered.
      * @param password The password of the user.
      * @throws CancelActionException if registration wasn't accepted.
      */
     public void register(String userName, String userEmail, String password) throws CancelActionException{
-        Role roleUser = new Role((long)0);
+        Role roleUser = new Role(Role.RoleType.USER.getRole());
         User user=new User(userEmail,userName,password,roleUser);
         try {
             userManager.register(user);
@@ -96,7 +106,8 @@ public class UserController {
         }
     }
 
-    /*
+    /**
+     * Updates user's password
      * @param password The new password the user wants to be set.
      * @param newPassword The current password of the user.
      * @throws CancelActionException if the update wasn't accepted with those parameters.
@@ -124,9 +135,12 @@ public class UserController {
         // Invokes UserManager to do the registration.
     }
 
-    /*
-    * @ UMFlix's movies
-    */
+
+    /**
+     * Create a list of the UMFlix's movies
+     * @return The list with all the selected movies
+     * @throws InvalidTokenException when the token is not valid for the user
+     */
     public List<Movie> showMovies() throws InvalidTokenException {
         // Uses the web service to access to CatalogService and searches with NULL parameters
         // Mock implementation
@@ -141,7 +155,8 @@ public class UserController {
         return movieList;
     }
 
-    /*
+    /**
+     * Search the movie with a keyword restriction
      * @param key The key is used to compare movie's attributes with it.
      * @return Returns the movie that matches they key
      * @throws CancelActionException if there weren't movies matching the key.
@@ -162,8 +177,10 @@ public class UserController {
         }
     }
 
-    /*
-     * Creates a new view of the movie.
+    /**
+     * Start the play of a moovie
+     * @param movieId the identification of the movie to play
+     * @throws CancelActionException when moviePlayerControllers throws it
      */
     public void chooseMovie(Long movieId) throws CancelActionException {
         // Creates a new MoviePlayerController with movieId and token parameters and calls startMovie()

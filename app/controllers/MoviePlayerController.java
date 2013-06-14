@@ -43,10 +43,11 @@ public class MoviePlayerController {
         private int currentClipIndex=-1; // Starts with -1 because there isn't a movie
         private boolean adTime=false;
 
-    /*
-     * Starts playing the movie.
+    /**
+     *  Starts playing the movie.
+     * @param movieID the identification of the movie that the user want to play
+     * @param userToken the token of the user that is trying to play the movie
      * @throws CancelActionException when the token is no longer valid.
-     *
      */
     protected void startMovie(Long movieID, String userToken) throws CancelActionException{
         //CAMBIAR A EJB
@@ -79,6 +80,12 @@ public class MoviePlayerController {
         }
     }
 
+    /**
+     * Provides the next clip of a movie
+     * @return the bytes that conform the clip
+     * @throws CancelActionException if the getCurrentClip() method thrwos it
+     * @throws ClipDoesntExistException if doesnt exist a next clip
+     */
     public byte[] nextClip() throws CancelActionException, ClipDoesntExistException {
         if(adTime==false){
             if((currentClipIndex+1)==movie.size()){
@@ -101,6 +108,12 @@ public class MoviePlayerController {
         }
     }
 
+    /**
+     * Provides the next clip of a movie
+     * @return the bytes that conform the clip
+     * @throws CancelActionException if the getCurrentClip() method thrwos it
+     * @throws ClipDoesntExistException if doesn't exist a next clip
+     */
     public byte[] prevClip() throws CancelActionException, ClipDoesntExistException{
         if(adTime==false){
             if(currentClipIndex==0){
@@ -123,9 +136,13 @@ public class MoviePlayerController {
         }
     }
 
+    /**
+     * Provides the current clip of a movie
+     * @return  the bytes that conform the clip
+     * @throws CancelActionException if the token
+     */
     public byte[] getCurrentClip() throws CancelActionException {
         ClipData clipData;
-
 
         //PRUEBA
         if(movie.get(currentClipIndex).getId()==2L){
@@ -143,14 +160,21 @@ public class MoviePlayerController {
 
         try{
             clipData = movieDao.getClipData(token,movie.get(currentClipIndex).getId());
+            return getBytes(clipData.getBytes());
         } catch (InvalidTokenException e){
             throw new CancelActionException("Your session is no longer valid, please login again.");
-        } //catch (FileNotFoundException e) {
-           // e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        //}
-        return getBytes(clipData.getBytes());
+        } catch (FileNotFoundException e) {
+           throw new CancelActionException("There was an error loading the movie");
+        }
+
     }
 
+    /**
+     * Provides the necessary Advertisement
+     * @return
+     * @throws CancelActionException
+     * @throws NoAdsException
+     */
     private byte[] getAd() throws CancelActionException, NoAdsException {
         ClipData clipData;
         try{
@@ -161,6 +185,11 @@ public class MoviePlayerController {
         return getBytes(clipData.getBytes());
     }
 
+    /**
+     * Transform an array from Byte's objects to bytes
+     * @param bytes An array of Bytes
+     * @return An array of bytes
+     */
     private byte[] getBytes(Byte[] bytes){
         byte[] normalBytes = new byte[bytes.length];
         for (int i=0;i<bytes.length;i++){
