@@ -1,6 +1,5 @@
 package controllers;
 
-import dao.DaoFactory;
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
 import edu.umflix.exceptions.MovieNotFoundException;
 import edu.umflix.model.Clip;
@@ -12,9 +11,9 @@ import model.exceptions.NoAdsException;
 import model.exceptions.UserNotAllowedException;
 import org.apache.log4j.Logger;
 
-import java.io.*;
+import javax.ejb.EJB;
+import java.io.FileNotFoundException;
 import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  *
@@ -23,20 +22,22 @@ import java.util.ResourceBundle;
  */
 public class MoviePlayerController {
         // Configuration file name
-        private static final String PROPERTIES = "conf.dao_factory";
-        private static  ResourceBundle rb = ResourceBundle.getBundle(PROPERTIES);
+//        private static final String PROPERTIES = "conf.dao_factory";
+//        private static  ResourceBundle rb = ResourceBundle.getBundle(PROPERTIES);
 
         // Key for the name of the class that implement MovieManager
-        private static final String MOVIE_MANAGER_IMPL_K = "MOVIE_MANAGER_IMPL";
+//        private static final String MOVIE_MANAGER_IMPL_K = "MOVIE_MANAGER_IMPL";
 
         protected static Logger logger = Logger.getLogger("MoviePlayerController.class");
+
+        @EJB(beanName = "MovieManager")
+        private MovieManager movieDao;
 
         //Token of the movie of the user that is watching the movie.
         private String token;
         private Long movieId;
         private List<Clip> movie;
         private int currentClipIndex=-1; // Starts with -1 because there isn't a movie
-        private MovieManager movieDao;
         private boolean adTime;
 
     /*
@@ -45,7 +46,7 @@ public class MoviePlayerController {
      *
      */
     protected void startMovie(Long movieID, String userToken) throws CancelActionException{
-        movieDao = (MovieManager)(DaoFactory.getDao(rb.getString(MOVIE_MANAGER_IMPL_K)));
+//        movieDao = (MovieManager)(DaoFactory.getDao(rb.getString(MOVIE_MANAGER_IMPL_K)));
         this.token=userToken;
         this.movieId=movieID;
         adTime=false;
@@ -106,13 +107,14 @@ public class MoviePlayerController {
     }
 
     public byte[] getCurrentClip() throws CancelActionException {
-        ClipData clipData;
+        ClipData clipData = null;
         try{
             clipData = movieDao.getClipData(token,movie.get(currentClipIndex).getId());
         } catch (InvalidTokenException e){
             throw new CancelActionException("Your session is no longer valid, please login again.");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-
         return getBytes(clipData.getBytes());
     }
 

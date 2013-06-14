@@ -1,6 +1,5 @@
 package controllers;
 
-import dao.DaoFactory;
 import edu.um.arq.umflix.catalogservice.CatalogService;
 import edu.umflix.authenticationhandler.AuthenticationHandler;
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
@@ -12,8 +11,8 @@ import edu.umflix.usermanager.UserManager;
 import edu.umflix.usermanager.exceptions.*;
 import exception.CancelActionException;
 
+import javax.ejb.EJB;
 import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  *
@@ -23,26 +22,31 @@ import java.util.ResourceBundle;
 
 public class UserController {
     // Configuration file name
-    private static final String PROPERTIES = "conf.dao_factory";
+    //private static final String PROPERTIES = "conf.dao_factory";
     private static final String INVALID_EMAIL ="The email you submited is not valid.";
     private static final String INVALID_PASSWD ="Please choose a valid password";
     private static final String INVALID_ROLE ="Please retry the registration process.";
     private static final String EMAIL_TAKEN ="Email already taken, choose another one";
-    private static ResourceBundle rb = ResourceBundle.getBundle(PROPERTIES);
+    //private static ResourceBundle rb = ResourceBundle.getBundle(PROPERTIES);
 
     // Key for the name of the classes that implement UserManager and AuthenticationHandler
-    private static final String AUTH_HANDLER_IMPL_K = "AUTH_HANDLER_IMPL";
-    private static final String USER_MANAGER_IMPL_K = "USER_MANAGER_IMPL";
-    private static final String CATALOG_SERVICE_IMPL_K = "CATALOG_SERVICE_IMPL";
+//    private static final String AUTH_HANDLER_IMPL_K = "AUTH_HANDLER_IMPL";
+//    private static final String USER_MANAGER_IMPL_K = "USER_MANAGER_IMPL";
+//    private static final String CATALOG_SERVICE_IMPL_K = "CATALOG_SERVICE_IMPL";
+//    private static final String MOVIE_MANAGER_IMPL_K = "MOVIE_MANAGER_IMPL";
 
-    static AuthenticationHandler authHandler = (AuthenticationHandler)(DaoFactory.getDao(rb.getString(AUTH_HANDLER_IMPL_K)));
-    //static UserManager userManager = (UserManager)(DaoFactory.getDao(rb.getString(USER_MANAGER_IMPL_K)));
-    //static CatalogService catalogService = (CatalogService)(DaoFactory.getDao(rb.getString(CATALOG_SERVICE_IMPL_K)));
-    static UserManager userManager=new mockclasses.UserManager();
-    static CatalogService catalogService=new mockclasses.CatalogService();
+    @EJB(beanName = "AuthenticationService")
+    AuthenticationHandler authHandler;
+    @EJB(beanName = "UserManager")
+    UserManager userManager;
+    @EJB(beanName = "CatalogService")
+    CatalogService catalogService;
+//    static AuthenticationHandler authHandler = (AuthenticationHandler)(DaoFactory.getDao(rb.getString(AUTH_HANDLER_IMPL_K)));
+//    static UserManager userManager = (UserManager)(DaoFactory.getDao(rb.getString(USER_MANAGER_IMPL_K)));
+//    static CatalogService catalogService = (CatalogService)(DaoFactory.getDao(rb.getString(CATALOG_SERVICE_IMPL_K)));
 
-    private static final String MOVIE_MANAGER_IMPL_K = "MOVIE_MANAGER_IMPL";
-
+    //static UserManager userManager=new mockclasses.UserManager();
+    //static CatalogService catalogService=new mockclasses.CatalogService();
 
     // Indicates if the WebApp has a session opened
     private boolean sessionOpened;
