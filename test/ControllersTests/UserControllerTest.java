@@ -1,19 +1,20 @@
 package ControllersTests;
 
+import java.util.List;
 import java.util.ResourceBundle;
 
 import controllers.MoviePlayerController;
 import controllers.UserController;
+import edu.um.arq.umflix.catalogservice.CatalogService;
 import edu.umflix.authenticationhandler.AuthenticationHandler;
+import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
 import edu.umflix.authenticationhandler.exceptions.InvalidUserException;
 import edu.umflix.authenticationhandler.impl.AuthenticationHandlerImpl;
+import edu.umflix.model.Movie;
 import edu.umflix.model.Role;
 import edu.umflix.model.User;
 import edu.umflix.usermanager.UserManager;
-import edu.umflix.usermanager.exceptions.EmailAlreadyTakenException;
-import edu.umflix.usermanager.exceptions.InvalidEmailException;
-import edu.umflix.usermanager.exceptions.InvalidPasswordException;
-import edu.umflix.usermanager.exceptions.InvalidRoleException;
+import edu.umflix.usermanager.exceptions.*;
 import exception.CancelActionException;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -47,6 +48,7 @@ public class UserControllerTest {
         public UserControllerMock(){
             this.authHandler=Mockito.mock(AuthenticationHandlerImpl.class);
             this.userManager=Mockito.mock(UserManager.class);
+            this.catalogService=Mockito.mock(CatalogService.class);
         }
     }
 
@@ -58,7 +60,8 @@ public class UserControllerTest {
         UserControllerMock testedMock = new UserControllerMock();
         String userEmail="hola@gmail.com";
         String password="password";
-        User user = new User(userEmail, null, password, roleUser);
+        String name="nombre";
+        User user = new User(userEmail, name, password, roleUser);
         try {
             testedMock.login(userEmail,password);
         } catch (CancelActionException e) {
@@ -80,7 +83,7 @@ public class UserControllerTest {
         String password="password";
         User user = new User(userEmail, null, password, roleUser);
         try {
-            doThrow(new InvalidUserException()).when(testedMock.userManager).login(user);
+            doThrow(new edu.umflix.usermanager.exceptions.InvalidUserException()).when(testedMock.userManager).login(user);
         } catch (InvalidUserException e) {
             fail();
         }
@@ -153,7 +156,7 @@ public class UserControllerTest {
         String name="nombre";
         User user = new User(userEmail, name, password, roleUser);
         try {
-            doThrow(new InvalidEmailException()).when(testedMock.userManager).register(user);
+            doThrow(new InvalidPasswordException()).when(testedMock.userManager).register(user);
         } catch (InvalidEmailException e) {
             fail();
         } catch (InvalidPasswordException e) {
@@ -216,10 +219,103 @@ public class UserControllerTest {
             fail();
         }
         try {
-            testedMock.register(name,userEmail,password);
+            testedMock.register(name, userEmail, password);
         } catch (Exception e) {
             assertTrue(e instanceof CancelActionException);
             assertTrue(e.getMessage().equals(EMAIL_TAKEN));
         }
+    }
+
+    @Test
+    public void testUpdatePassword(){
+        UserController testedMock= new UserControllerMock();
+        String newPassword="nueva";
+        String oldPassword="vieja";
+        try {
+            User user=testedMock.authHandler.getUserOfToken(testedMock.getToken());
+            testedMock.updatePassword(oldPassword,newPassword);
+            try {
+                try {
+                    verify(testedMock.userManager).update(testedMock.getToken(),user,newPassword);
+                } catch (PermissionDeniedException e) {
+                    fail();
+                } catch (InvalidPasswordException e) {
+                    fail();
+                }
+            } catch (InvalidUserException e) {
+                fail();
+            }
+        } catch (InvalidTokenException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testNullPasswordUpdate(){
+        UserController testedMock=new UserControllerMock();
+        Role roleUser = new Role((long)0);
+        String userEmail="stored@gmail.com";
+        String password="secreta";
+        String name="nombre";
+        User storedUser=new User(userEmail,name,password,roleUser);
+        when(testedMock.authHandler.validateToken("userToken")).thenReturn(true);
+        try {
+            when(testedMock.authHandler.getUserOfToken("userToken")).thenReturn(storedUser);
+        } catch (InvalidTokenException e) {
+            fail();
+        }
+        testedMock.updatePassword(password,null);
+        try {
+            doThrow(new InvalidPasswordException()).when(testedMock.userManager).update("userToken", storedUser, null);
+        } catch (Exception e) {
+            fail();
+        }
+        try {
+            testedMock.userManager.update("userToken",storedUser,null);
+        } catch (Exception e) {
+            assertTrue(e instanceof InvalidPasswordException);
+        }
+    }
+    @Test
+     public void testNullUserUpdate(){
+        UserController testedMock=new UserControllerMock();
+        String password="secreta";
+        String newPassword="new";
+        User storedUser=null;
+        when(testedMock.authHandler.validateToken("userToken")).thenReturn(true);
+        try {
+            when(testedMock.authHandler.getUserOfToken("userToken")).thenReturn(storedUser);
+        } catch (InvalidTokenException e) {
+            fail();
+        }
+        try {
+            doThrow(new edu.umflix.usermanager.exceptions.InvalidUserException()).when(testedMock.userManager).update("userToken", null, newPassword);
+        } catch (Exception e) {
+            fail();
+        }
+        try {
+            testedMock.userManager.update("userToken",null,newPassword);
+        } catch (InvalidUserException e) {
+            assertTrue(testedMock.updatePassword(null, newPassword) == false);
+        } catch (PermissionDeniedException e) {
+            fail();
+        } catch (InvalidPasswordException e) {
+            fail();
+        } catch (InvalidTokenException e) {
+            fail();
+        }
+    }
+
+
+
+    @Test
+    public void testShowMovies(){
+        UserController testedMock=new UserControllerMock();
+        try {
+            List<Movie> movieList = testedMock.showMovies();
+        } catch (InvalidTokenException e) {
+            fail();
+        }
+        assertTrue();
     }
 }

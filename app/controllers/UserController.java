@@ -114,22 +114,28 @@ public class UserController {
      */
     public boolean updatePassword(String password, String newPassword){
         boolean updated=false;
-        if(authHandler.validateToken(token)){
-            try{
-                 User user = authHandler.getUserOfToken(token);   //tries to get the user from token
-                try {
-                    userManager.update(token,user,newPassword);
-                    updated=true;
-                } catch (InvalidUserException e) {
-                } catch (PermissionDeniedException e) {
-                } catch (InvalidPasswordException e) {
-                } catch (InvalidTokenException e) {
+        if(password!=null && newPassword!=null){
+            if(authHandler.validateToken(token)){
+                try{
+                    User user = authHandler.getUserOfToken(token); //tries to get the user from token
+                    //checks that user password is the same that the one inserted
+                    if(user.getPassword().equals(password)){
+                        try {
+                            userManager.update(token,user,newPassword);
+                            updated=true;
+                        } catch (InvalidUserException e) {
+                        } catch (PermissionDeniedException e) {
+                        } catch (InvalidPasswordException e) {
+                        } catch (InvalidTokenException e) {
+                        }
+                    }
+                }catch(InvalidTokenException e){
                 }
-            }catch(InvalidTokenException e){
-             }
-        }else{
-            //log error de validacion
+            }else{
+                //log error de validacion
+            }
         }
+
         return updated;
         // Gets the User from the session's token
         // Invokes UserManager to do the registration.
