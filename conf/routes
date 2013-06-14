@@ -18,12 +18,13 @@ GET     /showMovies                  controllers.Application.showMovies
 #POST    /showMovies                  controllers.Application.showMovies
 POST    /showMovies                  controllers.Application.searchMovie
 
-POST    /movieView                   controllers.Application.chooseMovie(movieId: Long, movieName: String)
-GET     /movieView                   controllers.Application.movieView
-GET     /movieView                   controllers.Application.RefreshViewNextClip(movieName: String)
-GET     /movieView                   controllers.Application.RefreshViewPrevClip(movieName: String)
-GET     /video                       controllers.Application.getNextClip
-GET     /video                       controllers.Application.getPreviousClip
+#POST   /movieView                  controllers.Application.chooseMovie(movieId: Long, movieName: String)
+GET     /movieView                  controllers.Application.chooseMovie(movieId: Long, movieName: String)
+GET     /nextView                   controllers.Application.refreshViewNextClip(movieName: String)
+GET     /prevView                   controllers.Application.refreshViewPrevClip(movieName: String)
+#GET     /movieView                 controllers.Application.movieView
+GET     /video                      controllers.Application.getNextClip
+GET     /video                      controllers.Application.getPreviousClip
 
 
 # Map static resources from the /public folder to the /assets URL path

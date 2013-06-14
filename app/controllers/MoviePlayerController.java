@@ -9,10 +9,13 @@ import exception.ClipDoesntExistException;
 import model.MovieManager;
 import model.exceptions.NoAdsException;
 import model.exceptions.UserNotAllowedException;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-
+import services.MovieManagerImpl;
 import javax.ejb.EJB;
 import java.io.FileNotFoundException;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,7 +41,7 @@ public class MoviePlayerController {
         private Long movieId;
         private List<Clip> movie;
         private int currentClipIndex=-1; // Starts with -1 because there isn't a movie
-        private boolean adTime;
+        private boolean adTime=false;
 
     /*
      * Starts playing the movie.
@@ -46,10 +49,22 @@ public class MoviePlayerController {
      *
      */
     protected void startMovie(Long movieID, String userToken) throws CancelActionException{
-//        movieDao = (MovieManager)(DaoFactory.getDao(rb.getString(MOVIE_MANAGER_IMPL_K)));
+        //CAMBIAR A EJB
+       // movieDao = new MovieManagerImpl();
         this.token=userToken;
         this.movieId=movieID;
         adTime=false;
+
+        //PRUEBA
+        if(movieId==1L){
+            movie = new ArrayList<Clip>();
+            Clip clip = new Clip();
+            clip.setId(2L);
+            movie.add(clip);
+        }
+        else{  //No olvidar sacar la llave que cierra esto
+        //PRUEBA
+
         // Sets the Clip list of the movie this MoviePlayerController manages.
         try {
             movie = movieDao.getMovie(token, movieId); // Sets the movie the user is watching.
@@ -60,10 +75,12 @@ public class MoviePlayerController {
         } catch (InvalidTokenException e){
             throw new CancelActionException("Your session is no longer valid, please login again.");
         }
+
+        }
     }
 
     public byte[] nextClip() throws CancelActionException, ClipDoesntExistException {
-        if(adTime=false){
+        if(adTime==false){
             if((currentClipIndex+1)==movie.size()){
                 throw new ClipDoesntExistException("This movie has no more clips. Thanks for watching.");
             }
@@ -85,7 +102,7 @@ public class MoviePlayerController {
     }
 
     public byte[] prevClip() throws CancelActionException, ClipDoesntExistException{
-        if(adTime=false){
+        if(adTime==false){
             if(currentClipIndex==0){
                 throw new ClipDoesntExistException("This is the first clip of the movie.");
             }
@@ -107,14 +124,30 @@ public class MoviePlayerController {
     }
 
     public byte[] getCurrentClip() throws CancelActionException {
-        ClipData clipData = null;
+        ClipData clipData;
+
+
+        //PRUEBA
+        if(movie.get(currentClipIndex).getId()==2L){
+            try{
+            FileInputStream fs = new FileInputStream("C:/Users/telematica/Desktop/video.mp4");
+            byte[] bytes = IOUtils.toByteArray(fs);
+            return bytes;
+            } catch (FileNotFoundException eh) {
+                throw new RuntimeException(eh.getMessage());
+            } catch (IOException exc) {
+                throw new RuntimeException(exc.getMessage());
+            }
+        }
+        //PRUEBA
+
         try{
             clipData = movieDao.getClipData(token,movie.get(currentClipIndex).getId());
         } catch (InvalidTokenException e){
             throw new CancelActionException("Your session is no longer valid, please login again.");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        } //catch (FileNotFoundException e) {
+           // e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        //}
         return getBytes(clipData.getBytes());
     }
 

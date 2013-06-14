@@ -3,6 +3,7 @@ package controllers;
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
 import edu.umflix.model.Movie;
 import exception.CancelActionException;
+import exception.ClipDoesntExistException;
 import org.apache.commons.io.IOUtils;
 import play.api.mvc.Response;
 import play.data.*;
@@ -41,8 +42,6 @@ public class Application extends Controller {
     private static final String COULD_NOT_CHANGE_PASSWORD ="Please retry changing your password, something went wrong";
     static UserController userController= new UserController();
     static MoviePlayerController moviePlayerController=new MoviePlayerController();
-    static InputStream iStream;
-
 
     /**
      * Describes the login form.
@@ -151,13 +150,23 @@ public class Application extends Controller {
                 movies = userController.showMovies();
                 return ok(showMovies.render(movies));
             }
-            message=NO_MOVIES;
-            return ok(homePage.render(message));
+
+            //PRUEBA
+            movies = new ArrayList<Movie>();
+            Movie movie = new Movie();
+            movie.setId(1L);
+            movie.setDirector("Director");
+            movie.setGenre("Genre");
+            movie.setTitle("Movie title");
+            movies.add(0,movie);
+            return ok(showMovies.render(movies));
+            //PRUEBA
+
+            //message=NO_MOVIES;
+            //return ok(homePage.render(message));
         } catch (InvalidTokenException e) {
             return ok(index.render(form(Login.class)));
         }
-
-
     }
 
     public static Result searchMovie(){
@@ -188,9 +197,13 @@ public class Application extends Controller {
             return ok(homePage.render(e.getMessage()));
         }
     }
-    public static Result RefreshViewPrevClip(String title){
-        return ok(movieView.render(title,false));
+    public static Result refreshViewPrevClip(String title){
+        return ok(prevView.render(title,false));
     }
+
+//    public static Result movieView(){
+//        return ok(movieView.render("Hola",false));
+//    }
 
     public static Result getPreviousClip(){
          byte[] bytes;
@@ -201,7 +214,11 @@ public class Application extends Controller {
         }catch (CancelActionException e) {
             return ok(homePage.render(e.getMessage()));  //To change body of catch statement use File | Settings | File Templates.
         }catch (ClipDoesntExistException e){
-            bytes = moviePlayerController.currentClip();
+            try {
+                bytes = moviePlayerController.getCurrentClip();
+            } catch (CancelActionException es) {
+                return ok(homePage.render(e.getMessage()));
+            }
             response().setContentType("video/mp4");
             return ok(bytes);
         }
@@ -209,12 +226,8 @@ public class Application extends Controller {
 
     }
 
-    public static Result movieView(){
-        return ok(movieView.render("Stupid dog.",true));
-    }
-
-    public static Result RefreshViewNextClip(String title){
-        return ok(movieView.render("Stupid dog.",true));
+    public static Result refreshViewNextClip(String title){
+        return ok(nextView.render("Stupid dog.",true));
     }
 
     public static Result getNextClip(){
@@ -226,7 +239,11 @@ public class Application extends Controller {
         }catch (CancelActionException e) {
             return ok(homePage.render(e.getMessage()));  //To change body of catch statement use File | Settings | File Templates.
         }catch (ClipDoesntExistException e){
-            bytes = moviePlayerController.currentClip();
+            try {
+                bytes = moviePlayerController.getCurrentClip();
+            } catch (CancelActionException es) {
+                return ok(homePage.render(e.getMessage()));
+            }
             response().setContentType("video/mp4");
             return ok(bytes);
         }
