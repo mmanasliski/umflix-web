@@ -12,12 +12,9 @@ import exception.ClipDoesntExistException;
 import model.MovieManager;
 import model.exceptions.NoAdsException;
 import model.exceptions.UserNotAllowedException;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import javax.ejb.EJB;
-import java.io.FileNotFoundException;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -56,21 +53,9 @@ public class MoviePlayerController {
      * @throws CancelActionException when the token is no longer valid.
      */
     protected void startMovie(Long movieID, String userToken) throws CancelActionException{
-        //CAMBIAR A EJB
-       // movieDao = new MovieManagerImpl();
         this.token=userToken;
         this.movieId=movieID;
         adTime=false;
-
-        //PRUEBA
-        if(movieId==1L){
-            movie = new ArrayList<Clip>();
-            Clip clip = new Clip();
-            clip.setId(2L);
-            movie.add(clip);
-        }
-        else{  //No olvidar sacar la llave que cierra esto
-        //PRUEBA
 
         // Sets the Clip list of the movie this MoviePlayerController manages.
         try {
@@ -83,7 +68,6 @@ public class MoviePlayerController {
             throw new CancelActionException("Your session is no longer valid, please login again.");
         }
 
-        }
     }
 
     /**
@@ -149,20 +133,6 @@ public class MoviePlayerController {
      */
     public byte[] getCurrentClip() throws CancelActionException {
         ClipData clipData;
-
-        //PRUEBA
-        if(movie.get(currentClipIndex).getId()==2L){
-            try{
-            FileInputStream fs = new FileInputStream("C:/Users/telematica/Desktop/video.mp4");
-            byte[] bytes = IOUtils.toByteArray(fs);
-            return bytes;
-            } catch (FileNotFoundException eh) {
-                throw new RuntimeException(eh.getMessage());
-            } catch (IOException exc) {
-                throw new RuntimeException(exc.getMessage());
-            }
-        }
-        //PRUEBA
 
         try{
             clipData = movieDao.getClipData(token,movie.get(currentClipIndex).getId());
