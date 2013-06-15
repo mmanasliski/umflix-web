@@ -47,6 +47,7 @@ public class UserControllerTest {
             this.authHandler=Mockito.mock(AuthenticationHandlerImpl.class);
             this.userManager=Mockito.mock(UserManager.class);
             this.catalogService=Mockito.mock(CatalogService.class);
+            this.token="token";
         }
     }
 
@@ -294,7 +295,7 @@ public class UserControllerTest {
     @Test
     public void testShowMovies(){
         UserController testedMock=new UserControllerMock();
-        when(testedMock.getToken()).thenReturn("tokenValido");
+        testedMock.token=null;
         try {
             List<Movie> movieList = testedMock.showMovies();
         } catch (InvalidTokenException e) {
@@ -309,7 +310,7 @@ public class UserControllerTest {
     @Test
     public void testShowMoviesInvalidToken(){
         UserController testedMock=new UserControllerMock();
-        when(testedMock.getToken()).thenReturn(null);
+        testedMock.token=null;
         try {
             doThrow(new InvalidTokenException()).when(testedMock.catalogService).search(null,testedMock.getToken());
         } catch (InvalidTokenException e) {

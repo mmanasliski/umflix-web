@@ -29,9 +29,9 @@ public class UserController {
     private static final String INVALID_ROLE ="Please retry the registration process.";
     private static final String EMAIL_TAKEN ="Email already taken, choose another one";
 
-    private AuthenticationHandler authHandler = (AuthenticationHandler)getBean("AuthenticationService");
-    private UserManager userManager = (UserManager) getBean("UserManager");
-    private CatalogService catalogService = (CatalogService) getBean("CatalogService");
+    public AuthenticationHandler authHandler = (AuthenticationHandler)getBean("AuthenticationService");
+    public UserManager userManager = (UserManager) getBean("UserManager");
+    public CatalogService catalogService = (CatalogService) getBean("CatalogService");
 
     /**
      * Indicates if the WebApp has a session opened
@@ -41,7 +41,7 @@ public class UserController {
     /**
      *User's session token
      */
-       private String token;
+       public String token;
 
     /**
      * getter of the token
