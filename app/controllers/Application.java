@@ -4,7 +4,6 @@ import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
 import edu.umflix.model.Movie;
 import exception.CancelActionException;
 import exception.ClipDoesntExistException;
-import org.apache.commons.io.IOUtils;
 import play.api.mvc.Response;
 import play.data.*;
 import play.mvc.*;
@@ -176,19 +175,8 @@ public class Application extends Controller {
                 return ok(showMovies.render(movies));
             }
 
-            //PRUEBA
-            movies = new ArrayList<Movie>();
-            Movie movie = new Movie();
-            movie.setId(1L);
-            movie.setDirector("Director");
-            movie.setGenre("Genre");
-            movie.setTitle("Movie title");
-            movies.add(0,movie);
-            return ok(showMovies.render(movies));
-            //PRUEBA
-
-            //message=NO_MOVIES;
-            //return ok(homePage.render(message));
+            message=NO_MOVIES;
+            return ok(homePage.render(message));
         } catch (InvalidTokenException e) {
             return ok(index.render(form(Login.class)));
         }
