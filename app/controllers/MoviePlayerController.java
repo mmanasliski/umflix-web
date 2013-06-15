@@ -37,7 +37,7 @@ public class MoviePlayerController {
         protected static Logger logger = Logger.getLogger("MoviePlayerController.class");
 
         @EJB(beanName = "MovieManager")
-        private MovieManager movieDao;
+        public MovieManager movieDao;
 
         @EJB(beanName = "ActivityDao")
         private ActivityDao activityDao;
@@ -55,7 +55,7 @@ public class MoviePlayerController {
      * @param userToken the token of the user that is trying to play the movie
      * @throws CancelActionException when the token is no longer valid.
      */
-    protected void startMovie(Long movieID, String userToken) throws CancelActionException{
+    public void startMovie(Long movieID, String userToken) throws CancelActionException{
         //CAMBIAR A EJB
        // movieDao = new MovieManagerImpl();
         this.token=userToken;
@@ -147,7 +147,7 @@ public class MoviePlayerController {
      * @return  the bytes that conform the clip
      * @throws CancelActionException if the token is not valid
      */
-    public byte[] getCurrentClip() throws CancelActionException {
+        public byte[] getCurrentClip() throws CancelActionException {
         ClipData clipData;
 
         //PRUEBA
