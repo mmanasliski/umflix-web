@@ -14,6 +14,8 @@ import exception.CancelActionException;
 import javax.ejb.EJB;
 import java.util.List;
 
+import static controllers.BeanFactory.getBean;
+
 /**
  *
  * This controller responds to user's requests and manages their session.
@@ -22,31 +24,14 @@ import java.util.List;
 
 public class UserController {
     // Configuration file name
-    //private static final String PROPERTIES = "conf.dao_factory";
     private static final String INVALID_EMAIL ="The email you submited is not valid.";
     private static final String INVALID_PASSWD ="Please choose a valid password";
     private static final String INVALID_ROLE ="Please retry the registration process.";
     private static final String EMAIL_TAKEN ="Email already taken, choose another one";
-    //private static ResourceBundle rb = ResourceBundle.getBundle(PROPERTIES);
 
-    // Key for the name of the classes that implement UserManager and AuthenticationHandler
-//    private static final String AUTH_HANDLER_IMPL_K = "AUTH_HANDLER_IMPL";
-//    private static final String USER_MANAGER_IMPL_K = "USER_MANAGER_IMPL";
-//    private static final String CATALOG_SERVICE_IMPL_K = "CATALOG_SERVICE_IMPL";
-//    private static final String MOVIE_MANAGER_IMPL_K = "MOVIE_MANAGER_IMPL";
-
-    @EJB(beanName = "AuthenticationService")
-    public AuthenticationHandler authHandler;
-    @EJB(beanName = "UserManager")
-    public UserManager userManager;
-    @EJB(beanName = "CatalogService")
-    public CatalogService catalogService;
-//    static AuthenticationHandler authHandler = (AuthenticationHandler)(DaoFactory.getDao(rb.getString(AUTH_HANDLER_IMPL_K)));
-//    static UserManager userManager = (UserManager)(DaoFactory.getDao(rb.getString(USER_MANAGER_IMPL_K)));
-//    static CatalogService catalogService = (CatalogService)(DaoFactory.getDao(rb.getString(CATALOG_SERVICE_IMPL_K)));
-
-    //static UserManager userManager=new mockclasses.UserManager();
-    //static CatalogService catalogService=new mockclasses.CatalogService();
+    private AuthenticationHandler authHandler = (AuthenticationHandler)getBean("AuthenticationService");
+    private UserManager userManager = (UserManager) getBean("UserManager");
+    private CatalogService catalogService = (CatalogService) getBean("CatalogService");
 
     /**
      * Indicates if the WebApp has a session opened
@@ -152,7 +137,6 @@ public class UserController {
         // Mock implementation
 
         List<Movie> movieList;
-        //CatalogServiceImpl catalogService = new CatalogServiceImpl();
         try{
             movieList = catalogService.search(null, null);
         } catch (InvalidTokenException e) {
@@ -172,7 +156,6 @@ public class UserController {
         // Uses the web service to access to CatalogService and searches with the key parameter
         // Mock implementation
         Movie movie;
-        //CatalogServiceImpl catalogService = new CatalogServiceImpl();
         try{
             List<Movie> movieList = catalogService.search(key, this.token);
             if(movieList!=null && !movieList.isEmpty()){

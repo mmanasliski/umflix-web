@@ -18,26 +18,18 @@ import java.io.*;
 import java.util.Date;
 import java.util.List;
 
+import static controllers.BeanFactory.getBean;
+
 /**
  *
  * This controller manages the view of a Movie.
  *
  */
 public class MoviePlayerController {
-        // Configuration file name
-//        private static final String PROPERTIES = "conf.dao_factory";
-//        private static  ResourceBundle rb = ResourceBundle.getBundle(PROPERTIES);
-
-        // Key for the name of the class that implement MovieManager
-//        private static final String MOVIE_MANAGER_IMPL_K = "MOVIE_MANAGER_IMPL";
 
         protected static Logger logger = Logger.getLogger("MoviePlayerController.class");
-
-        @EJB(beanName = "MovieManager")
-        public MovieManager movieDao;
-
-        @EJB(beanName = "ActivityDao")
-        private ActivityDao activityDao;
+        private MovieManager movieDao = (MovieManager) getBean("MovieManager");
+        public ActivityDao activityDao = (ActivityDao) getBean("ActivityDao");
 
         //Token of the movie of the user that is watching the movie.
         private String token;
