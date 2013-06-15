@@ -6,6 +6,44 @@
     <version>1.0-SNAPSHOT</version>
     <name>umflix-web</name>
 
+    <build>
+        <!-- Play source directory -->
+        <sourceDirectory>app</sourceDirectory>
+        <testSourceDirectory>test</testSourceDirectory>
+
+        <plugins>
+            <plugin>
+                <groupId>org.nanoko.playframework</groupId>
+                <artifactId>play2-maven-plugin</artifactId>
+                <version>1.2.2</version>
+            </plugin>
+
+            <!--  <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-compiler-plugin</artifactId>
+                  <version>2.3.1</version>
+                  <configuration>
+                      <source>1.6</source>
+                      <target>1.6</target>
+                  </configuration>
+              </plugin> -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>emma-maven-plugin</artifactId>
+                <version>1.0-alpha-3</version>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>emma-maven-plugin</artifactId>
+                    <version>1.0-alpha-3</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
     <repositories>
         <repository>
             <id>typesafe</id>
@@ -27,11 +65,6 @@
                 <version>1.0-alpha-3</version>
                 <inherited>true</inherited>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>surefire-report-maven-plugin</artifactId>
-                <inherited>true</inherited>
-            </plugin>
         </plugins>
     </reporting>
 
@@ -43,17 +76,7 @@
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
         </dependency>
-        <!--
-        Add your dependencies here (modules, libraries...).
-        Dependencies in the compile scope will be embedded within the application.
 
-        <dependency>
-            <groupId>org.apache.openejb</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>6.0-4</version>
-            <scope>provided</scope>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
@@ -64,11 +87,13 @@
             <groupId>umflix-persistence</groupId>
             <artifactId>umflix-persistence</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>autenticationhandler</groupId>
             <artifactId>autenticationhandler</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -80,11 +105,13 @@
             <groupId>usermanager</groupId>
             <artifactId>usermanager</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>movie-manager</groupId>
             <artifactId>movie-manager</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
 
@@ -92,6 +119,7 @@
             <groupId>um-arq-umflix</groupId>
             <artifactId>catalog-service</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
 
@@ -100,7 +128,6 @@
             <groupId>play</groupId>
             <artifactId>play_2.9.1</artifactId>
             <version>2.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -108,44 +135,14 @@
             <version>4.10</version>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>
-            <groupId>org.apache.openejb</groupId>
-            <artifactId>openejb-core</artifactId>
-            <version>4.6.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>                    -->
 
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.16</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
 
-    <build>
-        <!-- Play source directory -->
-        <sourceDirectory>app</sourceDirectory>
-        <testSourceDirectory>test</testSourceDirectory>
-
-        <plugins>
-           <plugin>
-                <groupId>org.nanoko.playframework</groupId>
-                <artifactId>play2-maven-plugin</artifactId>
-                <version>1.2.2</version>
-            </plugin>
-
-            <!--  <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-compiler-plugin</artifactId>
-                  <version>2.3.1</version>
-                  <configuration>
-                      <source>1.6</source>
-                      <target>1.6</target>
-                  </configuration>
-              </plugin> -->
-
-          </plugins>
-
-      </build>
   </project>

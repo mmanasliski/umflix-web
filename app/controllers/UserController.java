@@ -194,4 +194,14 @@ public class UserController {
         moviePlayerController.startMovie(movieId, this.token);
     }
 
+    /**
+     *
+     * @param token of the user to get
+     * @return the user to which the token belongs
+     * @throws InvalidTokenException when the token is invalid
+     */
+    public User getUserOfToken(String token) throws InvalidTokenException{
+         return authHandler.getUserOfToken(token);
+    }
+
 }

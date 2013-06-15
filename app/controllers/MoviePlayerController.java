@@ -2,8 +2,11 @@ package controllers;
 
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
 import edu.umflix.exceptions.MovieNotFoundException;
+import edu.umflix.model.Activity;
 import edu.umflix.model.Clip;
 import edu.umflix.model.ClipData;
+import edu.umflix.model.User;
+import edu.umflix.persistence.ActivityDao;
 import exception.CancelActionException;
 import exception.ClipDoesntExistException;
 import model.MovieManager;
@@ -11,11 +14,11 @@ import model.exceptions.NoAdsException;
 import model.exceptions.UserNotAllowedException;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import services.MovieManagerImpl;
 import javax.ejb.EJB;
 import java.io.FileNotFoundException;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,6 +38,9 @@ public class MoviePlayerController {
 
         @EJB(beanName = "MovieManager")
         private MovieManager movieDao;
+
+        @EJB(beanName = "ActivityDao")
+        private ActivityDao activityDao;
 
         //Token of the movie of the user that is watching the movie.
         private String token;
@@ -139,7 +145,7 @@ public class MoviePlayerController {
     /**
      * Provides the current clip of a movie
      * @return  the bytes that conform the clip
-     * @throws CancelActionException if the token
+     * @throws CancelActionException if the token is not valid
      */
     public byte[] getCurrentClip() throws CancelActionException {
         ClipData clipData;
@@ -160,30 +166,45 @@ public class MoviePlayerController {
 
         try{
             clipData = movieDao.getClipData(token,movie.get(currentClipIndex).getId());
-            return getBytes(clipData.getBytes());
+            sendActivity();
         } catch (InvalidTokenException e){
             throw new CancelActionException("Your session is no longer valid, please login again.");
-        } catch (FileNotFoundException e) {
-           throw new CancelActionException("There was an error loading the movie");
         }
 
+        return getBytes(clipData.getBytes());
     }
 
     /**
      * Provides the necessary Advertisement
-     * @return
-     * @throws CancelActionException
-     * @throws NoAdsException
+     * @return the bytes of the ad, mp4 format
+     * @throws CancelActionException if the token is not valid
+     * @throws NoAdsException when there are no ads to get
      */
     private byte[] getAd() throws CancelActionException, NoAdsException {
         ClipData clipData;
         try{
             clipData = movieDao.getAd(token, movieId);
+            sendActivity();
         } catch (InvalidTokenException e){
             throw new CancelActionException("Your session is no longer valid, please login again.");
         }
+
         return getBytes(clipData.getBytes());
     }
+
+    /**
+     *  Sends the current Activity to ActivityDao.
+     */
+    public void sendActivity() throws InvalidTokenException{
+        // Sends the information about this Activity
+        Activity activity;
+        UserController userController = new UserController();
+        User user = userController.getUserOfToken(token);
+        Date date = new Date();
+        activity = new Activity(movieId,currentClipIndex, date.getTime(),user);
+        activityDao.addActivity(activity);
+    }
+
 
     /**
      * Transform an array from Byte's objects to bytes
