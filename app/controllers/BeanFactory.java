@@ -1,12 +1,13 @@
 package controllers;
 
 import edu.um.arq.umflix.catalogservice.CatalogService;
-import edu.um.arq.umflix.catalogservice.exception.DaoException;
 import edu.umflix.authenticationhandler.AuthenticationHandler;
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
 import edu.umflix.authenticationhandler.exceptions.InvalidUserException;
+import edu.umflix.exceptions.ActivityNotFoundException;
 import edu.umflix.exceptions.MovieNotFoundException;
 import edu.umflix.model.*;
+import edu.umflix.persistence.ActivityDao;
 import edu.umflix.usermanager.UserManager;
 import edu.umflix.usermanager.exceptions.*;
 import model.MovieManager;
@@ -20,7 +21,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -35,6 +35,7 @@ public class BeanFactory {
     public static final String USER_MANAGER = "UserManager";
     public static final String AUTH_HANDLER = "AuthenticationHandler";
     public static final String CATALOG_SERVICE = "CatalogService";
+    public static final String ACTIVITY_DAO = "ActivityDao";
 
 
     public static Object getBean(String key){
@@ -42,11 +43,11 @@ public class BeanFactory {
         c.setId(1L);
 
         try{
-            Properties p = new Properties();
+//            Properties p = new Properties();
             Object o = null;
-            p.put("java.naming.factory.initial", "org.apache.openejb.client.RemoteInitialContextFactory");
-            p.put("java.naming.provider.url", "ejbd://localhost:4201");
-            InitialContext ctx = new InitialContext(p);
+//            p.put("java.naming.factory.initial", "org.apache.openejb.client.RemoteInitialContextFactory");
+//            p.put("java.naming.provider.url", "ejbd://localhost:4201");
+//            InitialContext ctx = new InitialContext(p);
             if(key.equals(MOVIE_MANAGER)){
 
                 o = new MovieManager() {
@@ -61,7 +62,7 @@ public class BeanFactory {
                     public ClipData getClipData(String s, Long aLong) throws InvalidTokenException {
                         FileInputStream fs = null;
                         try {
-                            fs = new FileInputStream("video/video.mp4");
+                            fs = new FileInputStream("C:\\Obligatorio\\umflix-web\\app\\video\\video.mp4");
                             byte[] bytes = IOUtils.toByteArray((InputStream) fs);
                             MoviePlayerController moviePlayerController = new MoviePlayerController();
                             Byte[] bytes2 = new Byte[bytes.length];
@@ -71,6 +72,7 @@ public class BeanFactory {
                            ClipData clipData = new ClipData(bytes2,c);
                             return clipData;
                         } catch (FileNotFoundException e) {
+                            e.printStackTrace();
                             throw new InvalidTokenException();
                         } catch (IOException e) {
                             throw new InvalidTokenException();
@@ -135,22 +137,22 @@ public class BeanFactory {
 
                     @Override
                     public String authenticate(User user) throws InvalidUserException {
-                        if (user.getEmail().equals("useremail@mail.com")){
+                        //if (user.getEmail().equals("useremail@mail.com")){
                             return "usertoken";
-                        } else {
-                            throw new InvalidUserException();
-                        }
+//                        } else {
+//                            throw new InvalidUserException();
+//                        }
                     }
 
                     @Override
                     public User getUserOfToken(String s) throws InvalidTokenException {
-                        if (s.equals("usertoken")){
+                        //if (s.equals("usertoken")){
                             User u = new User();
                             u.setEmail("useremail@mail.com");
                             return u;
-                        }  else {
-                            throw new InvalidTokenException();
-                        }
+                        //}  else {
+                        //    throw new InvalidTokenException();
+                        //}
                     }
 
                     @Override
@@ -169,10 +171,34 @@ public class BeanFactory {
                     clips.add(c);
                     List<Movie> movies = new LinkedList<Movie>();
                     Movie movie = new Movie(cast,clips,"Spielberg",12L,true,"Comedy",null,null,"EL perro loco");
+                    movie.setId(1L);
                     movies.add(movie);
                     return movies;
                     }
                 };
+            }
+            if(key.equals(ACTIVITY_DAO)){
+                o = new ActivityDao() {
+                    @Override
+                    public void addActivity(Activity activity) {
+
+                    }
+
+                    @Override
+                    public Activity getActivityById(Long aLong) throws ActivityNotFoundException {
+                       return new Activity();
+                    }
+
+                    @Override
+                    public void updateActivity(Activity activity) throws ActivityNotFoundException {
+
+                    }
+
+                    @Override
+                    public void deleteActivity(Long aLong) throws ActivityNotFoundException {
+
+                    }
+                }  ;
             }
             return o;
         } catch (Exception e) {
