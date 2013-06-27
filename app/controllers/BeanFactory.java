@@ -78,7 +78,7 @@ public class BeanFactory {
 
                     @Override
                     public void sendActivity(String s, Activity activity) throws InvalidTokenException, ValuesInActivityException, UserNotAllowedException {
-                        //To change body of implemented methods use File | Settings | File Templates.
+
                     }
 
                     @Override
@@ -106,22 +106,22 @@ public class BeanFactory {
                 o = new UserManager() {
                     @Override
                     public void register(User user) throws InvalidEmailException, InvalidPasswordException, InvalidRoleException, EmailAlreadyTakenException {
-                        //To change body of implemented methods use File | Settings | File Templates.
+
                     }
 
                     @Override
                     public String login(User user) throws InvalidUserException {
-                        return null;  //To change body of implemented methods use File | Settings | File Templates.
+                        return "usertoken";
                     }
 
                     @Override
                     public void delete(String s, User user) throws InvalidUserException, PermissionDeniedException, InvalidTokenException {
-                        //To change body of implemented methods use File | Settings | File Templates.
+
                     }
 
                     @Override
                     public void update(String s, User user, String s2) throws InvalidUserException, PermissionDeniedException, InvalidPasswordException, InvalidTokenException {
-                        //To change body of implemented methods use File | Settings | File Templates.
+
                     }
                 }             ;
             }
@@ -129,22 +129,32 @@ public class BeanFactory {
                 o = new AuthenticationHandler() {
                     @Override
                     public boolean validateToken(String s) {
-                        return false;  //To change body of implemented methods use File | Settings | File Templates.
+                        return s.equals("usertoken");
                     }
 
                     @Override
                     public String authenticate(User user) throws InvalidUserException {
-                        return null;  //To change body of implemented methods use File | Settings | File Templates.
+                        if (user.getEmail().equals("useremail@mail.com")){
+                            return "usertoken";
+                        } else {
+                            throw new InvalidUserException();
+                        }
                     }
 
                     @Override
                     public User getUserOfToken(String s) throws InvalidTokenException {
-                        return null;  //To change body of implemented methods use File | Settings | File Templates.
+                        if (s.equals("usertoken")){
+                            User u = new User();
+                            u.setEmail("useremail@mail.com");
+                            return u;
+                        }  else {
+                            throw new InvalidTokenException();
+                        }
                     }
 
                     @Override
                     public boolean isUserInRole(String s, Role role) throws InvalidTokenException {
-                        return false;  //To change body of implemented methods use File | Settings | File Templates.
+                        return false;
                     }
                 }    ;
             }
