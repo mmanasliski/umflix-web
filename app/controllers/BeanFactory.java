@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -37,7 +38,8 @@ public class BeanFactory {
 
 
     public static Object getBean(String key){
-
+        final Clip c = new Clip(10L,1);
+        c.setId(1L);
 
         try{
             Properties p = new Properties();
@@ -46,8 +48,7 @@ public class BeanFactory {
             p.put("java.naming.provider.url", "ejbd://localhost:4201");
             InitialContext ctx = new InitialContext(p);
             if(key.equals(MOVIE_MANAGER)){
-                final Clip c = new Clip(10L,1);
-                c.setId(1L);
+
                 o = new MovieManager() {
                     @Override
                     public List<Clip> getMovie(String s, Long aLong) throws InvalidTokenException, MovieNotFoundException, UserNotAllowedException {
@@ -159,10 +160,17 @@ public class BeanFactory {
                 }    ;
             }
             if(key.equals(CATALOG_SERVICE)){
-                o = new CatalogService() {
-                    @Override
-                    public List<Movie> search(String s, String s2) throws DaoException, InvalidTokenException {
-                        return null;  //To change body of implemented methods use File | Settings | File Templates.
+            o = new CatalogService() {
+                @Override
+                public List<Movie> search(String s, String s2) throws InvalidTokenException {
+                    List<String> cast = new LinkedList<String>();
+                    cast.add("perro");
+                    List<Clip> clips = new LinkedList<Clip>();
+                    clips.add(c);
+                    List<Movie> movies = new LinkedList<Movie>();
+                    Movie movie = new Movie(cast,clips,"Spielberg",12L,true,"Comedy",null,null,"EL perro loco");
+                    movies.add(movie);
+                    return movies;
                     }
                 };
             }
@@ -170,5 +178,6 @@ public class BeanFactory {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
     }
 }
