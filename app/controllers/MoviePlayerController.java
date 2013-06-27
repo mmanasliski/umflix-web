@@ -158,12 +158,12 @@ public class MoviePlayerController {
      */
     public void sendActivity() throws InvalidTokenException{
         // Sends the information about this Activity
-        Activity activity;
-        UserController userController = new UserController();
-        User user = userController.getUserOfToken(token);
-        Date date = new Date();
-        activity = new Activity(movieId,currentClipIndex, date.getTime(),user);
-        activityDao.addActivity(activity);
+//        Activity activity;
+//        UserController userController = new UserController();
+//        User user = userController.getUserOfToken(token);
+//        Date date = new Date();
+//        activity = new Activity(movieId,currentClipIndex, date.getTime(),user);
+//        activityDao.addActivity(activity);
     }
 
 

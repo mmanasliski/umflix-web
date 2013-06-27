@@ -62,7 +62,7 @@ public class BeanFactory {
                     public ClipData getClipData(String s, Long aLong) throws InvalidTokenException {
                         FileInputStream fs = null;
                         try {
-                            fs = new FileInputStream("C:\\Obligatorio\\umflix-web\\app\\video\\video.mp4");
+                            fs = new FileInputStream("C:\\maven\\repo\\umflix-web\\umflix-web\\app\\video\\video.mp4");
                             byte[] bytes = IOUtils.toByteArray((InputStream) fs);
                             MoviePlayerController moviePlayerController = new MoviePlayerController();
                             Byte[] bytes2 = new Byte[bytes.length];
