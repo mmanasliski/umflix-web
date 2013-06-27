@@ -13,9 +13,14 @@ import model.MovieManager;
 import model.exceptions.NoAdsException;
 import model.exceptions.UserNotAllowedException;
 import model.exceptions.ValuesInActivityException;
+import org.apache.commons.io.IOUtils;
 
 import javax.naming.InitialContext;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
@@ -32,6 +37,8 @@ public class BeanFactory {
 
 
     public static Object getBean(String key){
+
+
         try{
             Properties p = new Properties();
             Object o = null;
@@ -39,16 +46,34 @@ public class BeanFactory {
             p.put("java.naming.provider.url", "ejbd://localhost:4201");
             InitialContext ctx = new InitialContext(p);
             if(key.equals(MOVIE_MANAGER)){
+                final Clip c = new Clip(10L,1);
+                c.setId(1L);
                 o = new MovieManager() {
                     @Override
                     public List<Clip> getMovie(String s, Long aLong) throws InvalidTokenException, MovieNotFoundException, UserNotAllowedException {
-                        Clip c = new Clip(1L,1);
-                        return null;
+                     List<Clip> lista = new LinkedList<Clip>();
+                        lista.add(c);
+                        return lista;
                     }
 
                     @Override
                     public ClipData getClipData(String s, Long aLong) throws InvalidTokenException {
-                        return null;  //To change body of implemented methods use File | Settings | File Templates.
+                        FileInputStream fs = null;
+                        try {
+                            fs = new FileInputStream("video/video.mp4");
+                            byte[] bytes = IOUtils.toByteArray((InputStream) fs);
+                            MoviePlayerController moviePlayerController = new MoviePlayerController();
+                            Byte[] bytes2 = new Byte[bytes.length];
+                            for (int i=0;i<bytes.length;i++){
+                                bytes2[i]= new Byte(bytes[i]);
+                            }
+                           ClipData clipData = new ClipData(bytes2,c);
+                            return clipData;
+                        } catch (FileNotFoundException e) {
+                            throw new InvalidTokenException();
+                        } catch (IOException e) {
+                            throw new InvalidTokenException();
+                        }
                     }
 
                     @Override
@@ -58,7 +83,22 @@ public class BeanFactory {
 
                     @Override
                     public ClipData getAd(String s, Long aLong) throws InvalidTokenException, NoAdsException {
-                        return null;  //To change body of implemented methods use File | Settings | File Templates.
+                        FileInputStream fs = null;
+                        try {
+                            fs = new FileInputStream("video/video.mp4");
+                            byte[] bytes = IOUtils.toByteArray((InputStream) fs);
+                            MoviePlayerController moviePlayerController = new MoviePlayerController();
+                            Byte[] bytes2 = new Byte[bytes.length];
+                            for (int i=0;i<bytes.length;i++){
+                                bytes2[i]= new Byte(bytes[i]);
+                            }
+                            ClipData clipData = new ClipData(bytes2,c);
+                            return clipData;
+                        } catch (FileNotFoundException e) {
+                            throw new InvalidTokenException();
+                        } catch (IOException e) {
+                            throw new InvalidTokenException();
+                        }
                     }
                 };
             }
